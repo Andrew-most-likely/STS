@@ -1,0 +1,399 @@
+
+    /* Global Styles */
+    body, html {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+    }
+    
+    .container {
+        margin: 20px;
+    }
+    
+    /* Header */
+    .header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 10px;
+
+    }
+    
+    .header .logo img {
+        width: 64px;
+        height: 64px;
+    }
+    
+    .header .title {
+        text-align: center;
+        flex: 1;
+    }
+    
+    .header .action-buttons {
+        display: flex;
+        gap: 10px;
+    }
+    
+    /* Buttons */
+    .button {
+        padding: 10px 20px;
+        font-size: 16px;
+        cursor: pointer;
+        border: none;
+        border-radius: 5px;
+        background-color: #007bff;
+        transition: background-color 0.3s;
+    }
+    
+    .button.primary:hover {
+        background-color: #0056b3;
+    }
+    
+    .button:hover {
+        background-color: #e0e0e0;
+    }
+    
+    /* Navigation */
+    .navigation {
+        padding: 20px;
+        background-color: #fafafa;
+    }
+    
+    .buttons-container {
+        display: flex;
+        flex-wrap: wrap;
+    }
+    
+    /* Search Section */
+    .search-tool {
+        background-color: #f9f9f9;
+        padding: 20px;
+    }
+    
+    .search-container {
+        gap: 10px;
+        justify-content: center;
+    }
+    
+    .search-container input {
+        padding: 10px;
+        width: 70%;
+        border-radius: 5px;
+        border: 1px solid #ddd;
+    }
+    
+    .search-button {
+        padding: 10px 20px;
+    }
+    
+    /* Data Visualization */
+    .data-visualization {
+        padding: 20px;
+    }
+    
+    .chart-container {
+        padding: 20px;
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        margin: 10px;
+        height: 400px;
+    }
+    
+    .charts {
+        display: flex;
+        gap: 20px;
+        justify-content: center;
+    }
+    
+    /* Footer */
+    .footer {
+        text-align: center;
+        padding: 20px;
+        color: #666;
+    }
+    
+    .decorative-line {
+        height: 2px;
+        background-color: #eee;
+        margin: 20px 0;
+    }
+    
+    /* Responsive Design */
+    @media (max-width: 850px) {
+        .header {
+            flex-direction: column;
+        }
+    
+        .buttons-container {
+            flex-direction: column;
+        }
+    
+        .charts {
+            flex-direction: column;
+        }
+    }
+    
+        
+        .title p {
+            margin: 5px 0;
+            font-size: 16px;
+            color: #666;
+            text-align: left;
+        }
+    
+        /* Core styles */
+        .modal {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: fixed;
+            inset: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+        }
+    
+        .modal-content {
+            background: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            text-align: center;
+            width: 300px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+    
+        .container {
+            margin-bottom: 20px;
+            text-align: center;
+        }
+    
+        /* Header layout */
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px;
+        }
+    
+        .logo {
+            flex: 0 0 auto;
+        }
+    
+        .title {
+            text-align: center;
+        }
+    
+        /* Button containers */
+        .b-container {
+            flex: 0 0 auto;
+            margin-left: auto;
+            display: flex;
+            gap: 10px;
+        }
+    
+        .kpi-container {
+            flex: 0 0 auto;
+            margin-left: right;
+        }
+    
+        /* Buttons */
+        .button {
+            padding: 10px 20px;
+            margin: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            border: none;
+            border-radius: 5px;
+            background-color: #007bff;
+            transition: background-color 0.3s;
+        }
+    
+        .button:hover {
+            background-color: #e0e0e0;
+        }
+    
+        .logbutton {
+            padding: 10px 20px;
+            margin: 10px;
+            font-size: 18px;
+            color: #fff;
+            background-color: #007bff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+    
+        .logbutton:hover {
+            background-color: #0056b3;
+        }
+    
+        /* Search container */
+        .search-container {
+            margin: 20px auto;
+            max-width: 600px;
+        }
+    
+        .search-container input {
+            padding: 10px;
+            width: 70%;
+            margin-right: 10px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+        }
+    
+        /* KPI Tray */
+        .rollout-tray {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+        }
+    
+        .rollout-tray.show {
+            max-height: 80px;
+            margin: auto;
+        }
+    
+        .input-container {
+            padding: 20px;
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            align-items: center;
+        }
+    
+        .input-container input[type="date"] {
+            padding: 8px;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+        }
+    
+        /* Chart containers */
+        .chart-container {
+            padding: 20px;
+            margin: 20px auto;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            height: 400px;
+            flex: 1;
+        }
+    
+        /* Container for the two charts next to each other */
+        .chart-row {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+        }
+    
+    
+        /* Decorative elements */
+        .decorative-line {
+            height: 2px;
+            background-color: #eee;
+            margin: 20px 0;
+        }
+    
+        /* Footer */
+        .copyright {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+        }
+    
+        /* Align header content */
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            /* Centers everything horizontally */
+            padding: 10px;
+            gap: 20px;
+            /* Space between title, logo, and KPI section */
+        }
+    
+        /* Title layout */
+        .title {
+            text-align: center;
+            flex: 1;
+            /* Allow it to take available space */
+        }
+    
+        /* KPI section styling */
+        .kpi-container {
+            display: flex;
+            gap: 20px;
+            /* Space between the input fields and button */
+            align-items: center;
+            justify-content: right;
+            flex: 1;
+            padding: 5px;
+        }
+    
+        /* Date input containers */
+        .kpi-container div {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+    
+        /* Label for Start and End date */
+        .kpi-container label {
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+    
+        /* Input fields styling */
+        .kpi-container input[type="date"] {
+            padding: 8px;
+            width: 150px;
+            /* Set the width to 150px */
+            border-radius: 4px;
+            border: 1px solid #ddd;
+        }
+    
+        /* Submit button styling */
+        .kpi-container button {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+    
+        .kpi-container button:hover {
+            background-color: #0056b3;
+        }
+    
+    
+        @media (max-width: 850px) {
+            #hide {
+                display: none;
+            }
+    
+            .buttons-container {
+                flex-direction: column;
+            }
+    
+            .title p {
+                display: none;
+            }
+    
+            .header {
+                flex-direction: column;
+            }
+    
+            .b-container {
+                margin: 10px auto;
+            }
+    
+            .input-container {
+                flex-direction: column;
+            }
+        }
+.Page-Center {
+    max-width: 1800px;
+}

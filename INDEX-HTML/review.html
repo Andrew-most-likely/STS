@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Assesment Form</title>
+    <!-- External Resources -->
+    <link rel="icon" type="image/x-icon" href="images/favicon.ico">
+    <link rel="stylesheet" href="../style.css">
+    <link rel="stylesheet" href="../INDEX-CSS/review.css">
+    <!-- Font Awesome for stars (Optional) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+
+<body>
+    <form id="ReviewSubmit" action="../INDEX-PHP/review.php" method="post" onsubmit="recordFormSubmitTime()">
+        <!-- Header Section -->
+        <div class="header">
+            <div class="logo">
+                <img src="../ASSETS/logo64.png" width="64" height="64" alt="Logo">
+
+            </div>
+            <div class="title">
+                <h1>Student IT Field Service</h1>
+                <p>Student IT Field Service: Tech Support That Supports You</p>
+            </div>
+        </div>
+        <div class="decorative-line"></div>
+        <h2>Student Assesment Form</h2>
+        <!-- Form Fields -->
+        <!-- Star Rating System -->
+        <label for="range">How would you rate the IT staff member's overall performance?</label>
+        <div required class="stars">
+            <i class="fas fa-star" onclick="setRating(1)"></i>
+            <i class="fas fa-star" onclick="setRating(2)"></i>
+            <i class="fas fa-star" onclick="setRating(3)"></i>
+            <i class="fas fa-star" onclick="setRating(4)"></i>
+            <i class="fas fa-star" onclick="setRating(5)"></i>
+        </div>
+
+        <input type="hidden" id="rating" name="rating" required>
+        <span id="ratingerror" style="color: red; display: none;">Please select a rating.</span>
+        <label for="resolved">Was the problem completely resolved?</label>
+        <select id="resolved" name="resolved" required>
+            <option value="" disabled selected>Select option</option>
+            <option value="Yes">Yes</option>
+            <option value="No">No</option>
+        </select>
+
+        <!-- clean question
+        <label for="clean">Was the work area left clean and organized after service completion?</label>
+        <select id="clean" name="clean" required onchange="showAdditionalFields()">
+            <option value="" disabled selected>Select option</option>
+            <option value="Yes">Yes</option>
+            <option value="No">No</option>
+          </select>  
+        -->
+        <label for="satisfaction">How satisfied are you with the quality of the solution?</label>
+
+        <select id="satisfaction" name="satisfaction" required>
+            <option value="" disabled selected>Select level of satisfaction</option>
+            <option value="Unsatisfactory">Unsatisfactory</option>
+            <option value="NeedsImprovement">Needs Improvement</option>
+            <option value="Satisfactory">Satisfactory</option>
+            <option value="Excellent">Excellent</option>
+        </select>
+
+        <label for="feedback">Additional Feedback?</label>
+        <input maxlength="255" type="text" id="feedback" name="feedback">
+
+        <!-- Contact Fields Section 
+        <label for="follow_up">Would you like someone from IT management to contact you about this review?</label>
+        <select id="follow_up" name="follow_up" required onchange="toggleContactFields(this.value)">
+            <option value="" disabled selected>Select Yes or No</option>
+            <option value="yes">Yes</option>
+            <option value="no">No</option>
+        </select>
+        
+        <div id="contact-fields" class="hidden">
+            <label for="contact_email">Email:</label>
+            <input type="email" id="contact_email" name="contact_email" class="form-input">
+            
+            <label for="contact_phone">Phone:</label>
+            <input type="tel" id="contact_phone" name="contact_phone" class="form-input">
+        </div>-->
+
+        <!-- Hidden Fields and Submit -->
+        <input type="hidden" id="form_submit_time" name="form_submit_time" value="">
+        <input type="submit" value="Submit">
+
+        <!-- Footer -->
+        <div class="decorative-line"></div>
+        <div class="copyright">
+            <p>&copy; Johnson & Wales University 2025<span id="year"></span></p>
+        </div>
+    </form>
+    <!-- Form Submission Time Recording -->
+
+    <script src="../INDEX-JS/review.js"></script>
+</body>
+
+</html>

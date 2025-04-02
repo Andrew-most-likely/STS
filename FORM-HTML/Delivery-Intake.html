@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<script>
+    // Check if the user is logged in (i.e., if 'userName' exists in sessionStorage)
+    if (sessionStorage.getItem('userName') === null || sessionStorage.getItem('userName') === undefined) {
+        // If user is undefined, redirect or show a message
+        window.location.href = '../login.html';  // Redirect to the login page or display a message
+    } else {
+        // Proceed with the application logic if user is defined
+        console.log('User is logged in:', sessionStorage.getItem('userName'));
+    }
+    // Check if the user is logged in
+    if (sessionStorage.getItem('isLoggedIn') !== 'true') {
+        window.location.href = '../index.html'; // Redirect to login page if not logged in
+    } 
+</script>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student ITFS</title>
+    <link rel="icon" type="image/x-icon" href="../ASSETS/favicon.ico">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="../Styles.css">
+
+</head>
+
+
+<body onload="fetchChildGroups(); loadTheme();">
+    <!-- Sidebar -->
+    <div class="sidebar" id="sidebar">
+        <div>
+            <div class="sidebar-header">
+                <button class="toggle-btn" id="toggleBtn">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <div class="sidebar-title">Student ITFS</div>
+            </div>
+
+            <div class="nav-items">
+                <button id="tab1" class="sidebar-button" onclick="location.href='../FORM-HTML/EQ-Drop.html'">
+                    <i class="fa-solid fa-rotate-left"></i>
+                    <span>Equipment Return</span>
+                </button>
+                <button id="tab2" class="sidebar-button" onclick="location.href='#'">
+                    <i class="fa-solid fa-boxes-stacked"></i>
+                    <span>Delivery Intake</span>
+                </button>
+                <button id="tab3" class="sidebar-button" onclick="location.href='../FORM-HTML/E-Waste.html'">
+                    <i class="fa-solid fa-recycle"></i>
+                    <span>E-waste</span>
+                </button>
+                <button id="tab4" class="sidebar-button" onclick="location.href='../FORM-HTML/Room-Check.html'">
+                    <i class="fa-solid fa-building"></i>
+                    <span>Room Check Form</span>
+                </button>
+                <button id="tab5" class="sidebar-button" onclick="location.href='../FORM-HTML/Field-Work.html'">
+                    <i class="fa-solid fa-screwdriver-wrench"></i>
+                    <span>Field Work</span>
+                </button>
+                <button id="tab6" class="sidebar-button" onclick="location.href='../PRINTER-CHECK/Printer-Check.php'">
+                    <i class="fa-solid fa-print"></i>
+                    <span>Printer Check</span>
+                </button>
+                <button id="tab7" class="sidebar-button" onclick="location.href='../INDEX-HTML/main.html'">
+                    <i class="fa-regular fa-chart-bar"></i>
+                    <span>Worker Stats</span>
+                </button>
+
+                <div class="decorative-line"></div>
+
+                <button id="tab8" class="sidebar-button" onclick="location.href='../LAB-STATS/Lab-Stats.html'">
+                    <i class="fa-solid fa-flask"></i>
+                    <span>Lab Stats</span>
+                </button>
+                <button id="tab9" class="sidebar-button" onclick="location.href='../../inventory/main.php'">
+                    <i class="fa-solid fa-warehouse"></i>
+                    <span>Inventory</span>
+                </button>
+                <button id="tab10" class="sidebar-button" onclick="location.href='../INDEX-HTML/Raw-Data.html'">
+                    <i class="fa-solid fa-file"></i>
+                    <span>Raw Data</span>
+                </button>
+            </div>
+        </div>
+
+        <div class="sidebar-copyright">
+            <img src="../ASSETS/logo-Black&White.png" class="sidebar-img" id="sidebarLogo" alt="Logo">
+            <p>JWU 2025 ©</p>
+        </div>
+    </div>
+
+    <!-- Overlay for mobile when sidebar is active -->
+    <div class="overlay" id="overlay"></div>
+
+    <!-- Top Navigation Bar -->
+    <div class="topnav">
+
+        <div class="search-container">
+            <input type="text" id="searchInput" placeholder="Search for assets, tickets, or users...">
+            <button data-emoji="✨" type="submit" class="submit">   <i class="fa-solid fa-magnifying-glass"></i></button>
+        </div>
+        <div class="profile" id="profile">
+            <div class="profile-icon" id="profileIcon">U</div>
+            <div class="dropdown" id="dropdown">
+                <div class="username">
+                    <h2 id="usernameDisplay"></h2>
+                </div>
+                <!-- Theme toggle switch -->
+                <div class="theme-toggle">
+                    <span>Dark Mode</span>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="themeToggle">
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+                <a href="#" class="dropdown-item">Schedule <i class="fa-solid fa-calendar-days" width="20"
+                        height="20"></i></a>
+                <a href="#" onclick="logout()" class="dropdown-item">Sign Out <i class="fa-solid fa-right-from-bracket"
+                        width="20" height="20"></i></a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content Area -->
+    <div class="main-content" id="mainContent">
+        <div class="box-container">
+
+<script>
+        function recordFormOpenTime() {
+      const now = new Date();
+      document.getElementById('form_open_time').value = now.toISOString().slice(0, 19).replace('T', ' ');
+    }
+
+    function recordFormSubmitTime() {
+      const now = new Date();
+      document.getElementById('form_submit_time').value = now.toISOString().slice(0, 19).replace('T', ' ');
+    }
+
+    function showAdditionalFields() {
+  const typeOfDelivery = document.getElementById("Type-of-Delivery").value;
+  const additionalFieldsContainer = document.getElementById("additionalFields");
+
+  // Hide all additional fields by default
+  const fields = additionalFieldsContainer.querySelectorAll("[id^='Title'], [id^='Number-of-Units'], [id^='Contents'], [id^='Person-Contacted'], [id^='Contact-Method'], [id^='Package-Location'], [id^='Addressed-To'], [id^='Toner-ID'], [id^='color'], [id^='Designated-Printer'][id^='Item-Description'], [id^='Arrangements-Made'], [id^='Staff-Aware']");
+  fields.forEach(field => {
+    field.style.display = "none";
+    field.removeAttribute("required");
+    field.value = ''; // Clear the value
+  });
+
+  // Show fields based on the selected delivery type
+  switch (typeOfDelivery) {
+    case 'Bulk':
+      toggleFieldVisibility("Number-of-Units", "Contents");
+      break;
+    case 'Individual':
+      toggleFieldVisibility("Addressed-To", "Item-Description", "Person-Contacted", "Contact-Method", "Package-Location");
+      break;
+    case 'Toner':
+      toggleFieldVisibility("Toner-ID", "color", "Designated-Printer");
+      break;
+    case 'Other':
+      toggleFieldVisibility("Item-Description", "Staff-Aware");
+      break;
+  }
+}
+
+function toggleFieldVisibility(...fieldIds) {
+  fieldIds.forEach(fieldId => {
+    document.getElementById(`${fieldId}-Title`).style.display = "block";
+    document.getElementById(fieldId).style.display = "block";
+    document.getElementById(fieldId).setAttribute("required", true);
+  });
+}
+</script>
+
+<style>
+  .hidden { display: none; }
+</style>
+
+<form id="deliveryIntakeForm" action="../FORM-PHP/DiSubmit.php" method="post" onsubmit="recordFormSubmitTime()">
+
+    <h2>Delivery Intake Form</h2>
+    <div class="decorative-line"></div>
+    <label for="Date-Received">Date Received:</label>
+    <input type="date" id="Date-Received" name="date-received" required>
+
+    <label for="Tracking-Number">Tracking Number:</label>
+    <input type="text" id="Tracking-Number" name="tracking-number" required>
+
+    <label for="delivery_company">Delivery Company:</label>
+    <input type="text" id="delivery_company" name="delivery_company" required>
+
+    <label for="Type-of-Delivery">Type of Delivery:</label>
+    <select id="Type-of-Delivery" name="type-of-delivery" required onchange="showAdditionalFields()">
+      <option value="" disabled selected>Select Type of Delivery</option>
+      <option value="Bulk">Bulk</option>
+      <option value="Individual">Individual</option>
+      <option value="Toner">Toner</option>
+      <option value="Other">Other</option>
+    </select>  
+
+    <div id="additionalFields">
+      <!-- Fields will be shown dynamically based on delivery type -->
+      <label id="Number-of-Units-Title" for="Number-of-Units" class="hidden">Number of Units:</label>
+      <input type="text" id="Number-of-Units" name="number-of-units" class="hidden" maxlength="255">
+
+      <label id="Contents-Title" for="Contents" class="hidden">Contents:</label>
+      <input type="text" id="Contents" name="contents" class="hidden" maxlength="255">
+
+      <label id="Addressed-To-Title" for="Addressed-To" class="hidden">Addressed To:</label>
+      <input type="text" id="Addressed-To" name="addressed-to" class="hidden" maxlength="255">
+
+      <label id="Person-Contacted-Title" for="Person-Contacted" class="hidden">Person Contacted:</label>
+      <select id="Person-Contacted" name="person-contacted" class="hidden" required>
+        <option value="" disabled selected>Select option</option>
+        <option value="Yes">Yes</option>
+        <option value="No">No</option>
+      </select>
+
+      <label id="Contact-Method-Title" for="Contact-Method" class="hidden">Contact Method:</label>
+      <select id="Contact-Method" name="contact-method" class="hidden" required>
+        <option value="" disabled selected>Select Contact Method</option>
+        <option value="Email">Email</option>
+        <option value="Teams">Teams</option>
+        <option value="Phone">Phone Call</option>
+      </select>
+
+      <label id="Package-Location-Title" for="Package-Location" class="hidden">Package Location:</label>
+      <select id="Package-Location" name="package-location" class="hidden" required>
+        <option value="" disabled selected>Select Package Location</option>
+        <option value="Pick_up">Del Sesto Pick up bin</option>
+        <option value="Student_Desk">Behind the student desk</option>
+        <option value="leaders_desk">On leaders desk (high Value/Importance item)</option>
+        <option value="del_sesto_cage">Del Sesto Cage</option>
+      </select>
+
+  <!-- Toner Fields -->
+  <label id="Toner-ID-Title" for="Toner-ID" class="hidden">Toner ID:</label>
+  <input type="text" id="Toner-ID" name="toner-id" class="hidden" maxlength="255">
+
+  <label id="color-Title" for="color" class="hidden">Color Type:</label>
+  <select id="color" name="color" class="hidden" required>
+    <option value="" disabled selected>Select Color</option>
+    <option value="Black">Black</option>
+    <option value="Cyan">Cyan</option>
+    <option value="Magenta">Magenta</option>
+    <option value="Yellow">Yellow</option>
+    <option value="OverFlowDrum">Over Flow Drum</option>
+  </select>
+
+  <label id="Designated-Printer-Title" for="Designated-Printer" class="hidden">Printer Model:</label>
+  <input type="text" id="Designated-Printer" name="designated-printer" class="hidden" maxlength="255">
+</div>
+
+
+      <label id="Item-Description-Title" for="Item-Description" class="hidden">Item Description:</label>
+      <input type="text" id="Item-Description" name="item-description" class="hidden" maxlength="255">
+
+      <label id="Arrangements-Made-Title" for="Arrangements-Made" class="hidden">Arrangements Made:</label>
+      <input type="text" id="Arrangements-Made" name="arrangements-made" class="hidden" maxlength="255">
+
+      <label id="Staff-Aware-Title" for="Staff-Aware" class="hidden">Staff Made Aware:</label>
+      <select id="Staff-Aware" name="staff-aware" class="hidden" >
+        <option value="" disabled selected>Select Staff</option>
+        <option value="Adam">Adam</option>
+        <option value="Tom">Tom</option>
+        <option value="Jerson">Jerson</option>
+        <option value="Shea">Shea</option>
+        <option value="Tony">Tony</option>
+        <option value="Jorge">Jorge</option>
+        <option value="Sarah">Sarah</option>
+        <option value="Stefan">Stefan</option>
+      </select>
+
+      <div class="decorative-line"></div>
+      <input type="submit" value="Submit">
+    </div>
+
+    <!-- Hidden fields to track form open and submit times -->
+    <input type="hidden" id="form_open_time" name="form_open_time">
+    <input type="hidden" id="form_submit_time" name="form_submit_time">
+
+
+
+  </form>
+
+
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <script src="../INDEX-JS/Wrapper.js"></script>
+    <script src="../INDEX-JS/testindexsearch.js"></script>
+    <script src='https://cdn.jsdelivr.net/npm/js-confetti@latest/dist/js-confetti.browser.js'></script>
+    <script>
+      // Initialize jsConfetti
+      const jsConfetti = new JSConfetti();
+
+// Add click event listeners to all buttons
+document.querySelectorAll('.submit').forEach(button => {
+button.addEventListener('click', () => {
+// Retrieve the emoji from the data-emoji attribute of the clicked button
+const emoji = button.getAttribute('data-emoji');
+// Trigger the confetti with the specific emoji
+jsConfetti.addConfetti({
+emojis: [emoji], // Use the emoji as confetti
+emojiSize: 70,
+confettiNumber: 40, // Number of confetti particles
+});
+});
+});
+</script>
+</body>
+
+</html>

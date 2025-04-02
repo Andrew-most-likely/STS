@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<script>
+    // Check if the user is logged in (i.e., if 'userName' exists in sessionStorage)
+    if (sessionStorage.getItem('userName') === null || sessionStorage.getItem('userName') === undefined) {
+        // If user is undefined, redirect or show a message
+        window.location.href = '../login.html';  // Redirect to the login page or display a message
+    } else {
+        // Proceed with the application logic if user is defined
+        console.log('User is logged in:', sessionStorage.getItem('userName'));
+    }
+    // Check if the user is logged in
+    if (sessionStorage.getItem('isLoggedIn') !== 'true') {
+        window.location.href = '../index.html'; // Redirect to login page if not logged in
+    } 
+</script>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student ITFS</title>
+    <link rel="icon" type="image/x-icon" href="../ASSETS/favicon.ico">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="../Styles.css">
+
+</head>
+
+<body onload="fetchChildGroups(); loadTheme();">
+    <!-- Sidebar -->
+    <div class="sidebar" id="sidebar">
+        <div>
+            <div class="sidebar-header">
+                <button class="toggle-btn" id="toggleBtn">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <div class="sidebar-title">Student ITFS</div>
+            </div>
+
+            <div class="nav-items">
+                <button id="tab1" class="sidebar-button" onclick="location.href='../FORM-HTML/EQ-Drop.html'">
+                    <i class="fa-solid fa-rotate-left"></i>
+                    <span>Equipment Return</span>
+                </button>
+                <button id="tab2" class="sidebar-button" onclick="location.href='../FORM-HTML/Delivery-Intake.html'">
+                    <i class="fa-solid fa-boxes-stacked"></i>
+                    <span>Delivery Intake</span>
+                </button>
+                <button id="tab3" class="sidebar-button" onclick="location.href='../FORM-HTML/E-Waste.html'">
+                    <i class="fa-solid fa-recycle"></i>
+                    <span>E-waste</span>
+                </button>
+                <button id="tab4" class="sidebar-button" onclick="location.href='#'">
+                    <i class="fa-solid fa-building"></i>
+                    <span>Room Check Form</span>
+                </button>
+                <button id="tab5" class="sidebar-button" onclick="location.href='../FORM-HTML/Field-Work.html'">
+                    <i class="fa-solid fa-screwdriver-wrench"></i>
+                    <span>Field Work</span>
+                </button>
+                <button id="tab6" class="sidebar-button" onclick="location.href='../PRINTER-CHECK/Printer-Check.php'">
+                    <i class="fa-solid fa-print"></i>
+                    <span>Printer Check</span>
+                </button>
+                <button id="tab7" class="sidebar-button" onclick="location.href='../INDEX-HTML/main.html'">
+                    <i class="fa-regular fa-chart-bar"></i>
+                    <span>Worker Stats</span>
+                </button>
+
+                <div class="decorative-line"></div>
+
+                <button id="tab8" class="sidebar-button" onclick="location.href='../LAB-STATS/Lab-Stats.html'">
+                    <i class="fa-solid fa-flask"></i>
+                    <span>Lab Stats</span>
+                </button>
+                <button id="tab9" class="sidebar-button" onclick="location.href='../../inventory/main.php'">
+                    <i class="fa-solid fa-warehouse"></i>
+                    <span>Inventory</span>
+                </button>
+                <button id="tab10" class="sidebar-button" onclick="location.href='../INDEX-HTML/Raw-Data.html'">
+                    <i class="fa-solid fa-file"></i>
+                    <span>Raw Data</span>
+                </button>
+            </div>
+        </div>
+
+        <div class="sidebar-copyright">
+            <img src="../ASSETS/logo-Black&White.png" class="sidebar-img" id="sidebarLogo" alt="Logo">
+            <p>JWU 2025 ©</p>
+        </div>
+    </div>
+
+    <!-- Overlay for mobile when sidebar is active -->
+    <div class="overlay" id="overlay"></div>
+
+    <!-- Top Navigation Bar -->
+    <div class="topnav">
+
+        <div class="search-container">
+            <input type="text" id="searchInput" placeholder="Search for assets, tickets, or users...">
+            <button data-emoji="✨" type="submit" class="submit">   <i class="fa-solid fa-magnifying-glass"></i></button>
+        </div>
+        <div class="profile" id="profile">
+            <div class="profile-icon" id="profileIcon">U</div>
+            <div class="dropdown" id="dropdown">
+                <div class="username">
+                    <h2 id="usernameDisplay"></h2>
+                </div>
+                <!-- Theme toggle switch -->
+                <div class="theme-toggle">
+                    <span>Dark Mode</span>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="themeToggle">
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+                <a href="#" class="dropdown-item">Schedule <i class="fa-solid fa-calendar-days" width="20"
+                        height="20"></i></a>
+                <a href="#" onclick="logout()" class="dropdown-item">Sign Out <i class="fa-solid fa-right-from-bracket"
+                        width="20" height="20"></i></a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content Area -->
+    <div class="main-content" id="mainContent">
+        <div class="box-container">
+
+             
+  <script>
+    function recordFormOpenTime() {
+      document.getElementById('form_open_time').value = new Date().toISOString();
+    }
+
+    function showAdditionalFields() {
+  var dropdown = document.getElementById("Building-dropdown");
+  var additionalFields = document.getElementById("additionalFields");
+  var roomNumberContainer = document.getElementById("room-number-container");
+
+  roomNumberContainer.style.display = "none";
+  additionalFields.innerHTML = "";
+
+  var checkboxLabels = ["Podium | Monitor | IO",
+                        "Projector/TV | Lamp hours",
+                        "Control panel | Touch/Buttons "];
+  var checkboxValues = ["conditionA", "conditionB", "conditionC"];
+
+  if (dropdown.value !== "") {
+    roomNumberContainer.style.display = "block";
+  }
+
+  for (var i = 0; i < checkboxLabels.length; i++) {
+    var checkboxContainer = document.createElement("div");
+    checkboxContainer.classList.add("checkbox-container");
+
+    var label = document.createElement("label");
+    label.setAttribute("for", checkboxValues[i]);
+    label.textContent = checkboxLabels[i];
+
+    var checkbox = document.createElement("input");
+    checkbox.setAttribute("type", "checkbox");
+    checkbox.setAttribute("id", checkboxValues[i]);
+    checkbox.setAttribute("name", checkboxValues[i]);
+    checkbox.setAttribute("value", "No");  // Default value is No
+    checkbox.setAttribute("onchange", "this.value = this.checked ? 'Yes' : 'No'");  // Update value based on checked state
+
+    checkboxContainer.appendChild(checkbox);
+    checkboxContainer.appendChild(label);
+    additionalFields.appendChild(checkboxContainer);
+  }
+}
+
+
+    function recordFormSubmitTime() {
+      document.getElementById('form_submit_time').value = new Date().toISOString();
+    }
+
+    // Image capture related functions
+
+    async function startCamera() {
+  try {
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+      alert('Your browser does not support camera access');
+      return;
+    }
+
+    const stream = await navigator.mediaDevices.getUserMedia({ 
+      video: {
+        facingMode: 'environment'
+      } 
+    });
+    
+    const camera = document.getElementById('camera');
+    camera.srcObject = stream;
+    camera.style.display = 'block';
+    document.getElementById('imagePreview').style.display = 'none';
+
+    // Wait for video to be ready
+    await new Promise((resolve) => {
+      camera.onloadedmetadata = () => {
+        camera.play();
+        resolve();
+      };
+    });
+
+  } catch (err) {
+    console.error('Camera error:', err);
+    alert('Error accessing camera: ' + err.message);
+  }
+}
+
+function stopCamera() {
+  const camera = document.getElementById('camera');
+  const stream = camera.srcObject;
+
+  if (stream) {
+    const tracks = stream.getTracks();
+    tracks.forEach(track => track.stop());  // Stop all tracks of the stream
+    camera.srcObject = null;  // Release the camera
+  }
+}
+
+function captureImage() {
+  const camera = document.getElementById('camera');
+  
+  // Make sure video is playing and has dimensions
+  if (!camera.videoWidth || !camera.videoHeight) {
+    alert('Camera not ready yet. Please wait a moment and try again.');
+    return;
+  }
+  
+  const canvas = document.createElement('canvas');
+  // Set canvas size to match video dimensions
+  canvas.width = camera.videoWidth;
+  canvas.height = camera.videoHeight;
+  
+  const ctx = canvas.getContext('2d');
+  ctx.drawImage(camera, 0, 0);
+  
+  canvas.toBlob(blob => {
+    imageBlob = blob; // Set global variable for the captured image
+    const imageUrl = URL.createObjectURL(blob);
+    const preview = document.getElementById('imagePreview');
+    preview.src = imageUrl;
+    preview.style.display = 'block';
+    camera.style.display = 'none';
+    stopCamera();  // Stop the camera after capturing
+  }, 'image/jpeg', 0.8);
+}
+
+
+    // Modified form submission to include the image
+    document.addEventListener("DOMContentLoaded", function() {
+  // This ensures the form elements are available before the function runs
+  recordFormOpenTime();
+});
+
+function recordFormSubmitTime() {
+  const formOpenTimeElement = document.getElementById('form_open_time');
+  if (formOpenTimeElement) {
+    formOpenTimeElement.value = new Date().toISOString();
+  } else {
+    console.error('form_open_time element not found');
+  }
+}
+
+let imageBlob = null; // Define global variable to hold the captured image data
+
+async function submitForm(event) {
+  event.preventDefault(); // Prevent default form submission
+  
+  // Record the submit time
+  recordFormSubmitTime();
+
+  const formData = new FormData(event.target);  // Create a FormData object from the form
+
+  // If an image has been captured, append it to the form data
+  if (imageBlob) {
+    formData.append('room_image', imageBlob, 'room_image.jpg');
+  }
+
+  // Use Fetch API or XMLHttpRequest to submit the form with the image
+  try {
+    const response = await fetch('../FORM-PHP/RcSubmit.php', {
+      method: 'POST',
+      body: formData,  // Send the form data with image
+    });
+
+    if (response.ok) {
+      // Redirect after successful submission or show a success message
+      window.location.href = "../INDEX-HTML/main.html";
+    } else {
+      // Handle errors
+      alert('Error submitting the form.');
+    }
+  } catch (error) {
+    console.error('Error:', error);
+    alert('Form submission failed.');
+  }
+}
+
+  </script>
+</head>
+
+
+
+<form onload="recordFormOpenTime()" id="roomCheckForm" method="post" action="../FORM-PHP/RcSubmit.php" onsubmit="submitForm(event)" enctype="multipart/form-data">
+    <input type="hidden" id="form_open_time" name="form_open_time" value="">
+
+
+    <h2>Room Check Form</h2>
+    <div class="decorative-line"></div>
+    <label for="date_checked">Date Check:</label>
+    <input type="date" id="date_checked" name="date_checked" maxlength="255" required>
+
+    <label for="Building-dropdown">Building Check:</label>
+    <select id="Building-dropdown" name="Building-dropdown" onchange="showAdditionalFields()">
+      <option value="" disabled selected>Select a Building</option>
+      <option value="CSI">CSI</option>
+      <option value="XVA">XVA</option>
+      <option value="JHW">JHW</option>
+      <option value="PA">PA</option>
+      <option value="ACD">ACD</option>
+      <option value="YENA">YENA</option>
+      <option value="TAC">TAC</option>
+      <option value="FRI">FRIEDMAN</option>
+      <option value="CCCE">CCCE</option>
+      <option value="HAC">HAC</option>
+      <option value="GWC">GWC</option>
+      <option value="GWC">JNH</option>
+    </select>
+
+    <div id="room-number-container" style="display: none;">
+      <label for="Room-Number">Room Number:</label>
+      <input type="text" id="Room-Number" name="Room-Number" maxlength="255" required>
+      <label id="disclaimer" style="margin-bottom: 10px;" for="range">*Check box if broken*</label>
+    </div>
+
+    <div id="additionalFields">
+      <!-- Additional checkboxes will appear here -->
+    </div>
+
+    <label for="room_notes">Room Check Notes:</label>
+    <textarea id="room_notes" name="room_notes" maxlength="254" rows="4"></textarea>
+    <div class="decorative-line"></div>
+    <input type="submit" value="Submit">
+
+  </form>
+
+  <script>
+    document.getElementById("date_checked").valueAsDate = new Date();
+  </script>
+
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <script src="../INDEX-JS/Wrapper.js"></script>
+    <script src="../INDEX-JS/testindexsearch.js"></script>
+    <script src='https://cdn.jsdelivr.net/npm/js-confetti@latest/dist/js-confetti.browser.js'></script>
+    <script>
+      // Initialize jsConfetti
+      const jsConfetti = new JSConfetti();
+
+// Add click event listeners to all buttons
+document.querySelectorAll('.submit').forEach(button => {
+button.addEventListener('click', () => {
+// Retrieve the emoji from the data-emoji attribute of the clicked button
+const emoji = button.getAttribute('data-emoji');
+// Trigger the confetti with the specific emoji
+jsConfetti.addConfetti({
+emojis: [emoji], // Use the emoji as confetti
+emojiSize: 70,
+confettiNumber: 40, // Number of confetti particles
+});
+});
+});
+</script>
+</body>
+
+</html>

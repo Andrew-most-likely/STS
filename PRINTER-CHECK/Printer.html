@@ -1,0 +1,1026 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Printer Status Dashboard</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #3498db;
+            --success: #2ecc71;
+            --warning: #f39c12;
+            --danger: #e74c3c;
+            --dark: #2c3e50;
+            --light: #ecf0f1;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            background-color: var(--primary);
+            color: white;
+            padding: 15px 0;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 24px;
+        }
+
+        .dashboard-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .search-box {
+            flex-grow: 1;
+            max-width: 300px;
+            display: flex;
+        }
+
+        .search-input {
+            flex-grow: 1;
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px 0 0 4px;
+            font-size: 14px;
+        }
+
+        .search-btn {
+            padding: 8px 12px;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 0 4px 4px 0;
+            cursor: pointer;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #2980b9;
+        }
+
+        .printer-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .printer-card {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+        }
+
+        .printer-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .printer-header {
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #eee;
+        }
+
+        .status-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 8px;
+        }
+
+        .status-good {
+            background-color: var(--success);
+        }
+
+        .status-warning {
+            background-color: var(--warning);
+        }
+
+        .status-error {
+            background-color: var(--danger);
+        }
+
+        .status-offline {
+            background-color: #95a5a6;
+        }
+
+        .printer-name {
+            font-weight: 600;
+            font-size: 16px;
+        }
+
+        .printer-ip {
+            color: #7f8c8d;
+            font-size: 14px;
+        }
+
+        .printer-body {
+            padding: 15px;
+        }
+
+        .consumable {
+            margin-bottom: 12px;
+        }
+
+        .consumable-name {
+            font-weight: 600;
+            margin-bottom: 5px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .progress-bar {
+            width: 100%;
+            background-color: #e0e0e0;
+            height: 20px;
+            border-radius: 10px;
+            margin-top: 5px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            border-radius: 10px;
+            transition: width 0.5s ease;
+        }
+
+        .bg-success {
+            background-color: #28a745;
+        }
+
+        .bg-warning {
+            background-color: #ffc107;
+        }
+
+        .bg-danger {
+            background-color: #dc3545;
+        }
+
+
+        .printer-footer {
+            padding: 15px;
+            text-align: center;
+            border-top: 1px solid #eee;
+        }
+
+        .printer-details {
+            display: none;
+            padding: 0 15px 15px;
+        }
+
+        .printer-details.expanded {
+            display: block;
+        }
+
+        .spinner {
+            animation: spin 1s linear infinite;
+            display: inline-block;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .offline-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 5;
+        }
+
+        .offline-message {
+            background-color: var(--danger);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 4px;
+            font-weight: 600;
+        }
+
+        .tray-status {
+            margin-top: 15px;
+        }
+
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        .error-message {
+            background-color: #ffecec;
+            border-left: 4px solid var(--danger);
+            padding: 12px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+        }
+
+        .success-message {
+            background-color: #e7f5e7;
+            border-left: 4px solid var(--success);
+            padding: 12px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        /* Toggle Switch */
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 24px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 24px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 16px;
+            width: 16px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked+.slider {
+            background-color: var(--primary);
+        }
+
+        input:checked+.slider:before {
+            transform: translateX(26px);
+        }
+
+        .auto-refresh-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* Overall modal style */
+        .printer-details-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+
+        .modal-content {
+            background: #fff;
+            border-radius: 12px;
+            width: 80%;
+            max-width: 600px;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+            padding: 30px;
+            position: relative;
+            animation: fadeIn 0.3s ease;
+        }
+
+        /* Header styling */
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+            border-radius: 12px 12px 0 0;
+            padding: 15px;
+        }
+
+        .modal-header h3 {
+            margin: 0;
+            font-size: 24px;
+            font-weight: 600;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 24px;
+            color: #ff6347;
+            cursor: pointer;
+        }
+
+
+        /* Body content styling */
+        .modal-body {
+            color: #555;
+            font-size: 16px;
+            line-height: 1.6;
+        }
+
+        /* Section styling */
+        h4 {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        /* Consumables section with color coding */
+        .consumables {
+            background: #eaf7ef;
+            border-left: 5px solid #4CAF50;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+        }
+
+        .consumables div {
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+
+        .consumables div strong {
+            color: #4CAF50;
+        }
+
+        /* Paper Tray Section */
+        .trays {
+            background: #f0f8ff;
+            border-left: 5px solid #1E90FF;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+        }
+
+        .trays div {
+            padding: 8px;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+
+        .trays div strong {
+            color: #1E90FF;
+        }
+
+        /* Errors Section */
+        .errors {
+            background: #ffebee;
+            border-left: 5px solid #f44336;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+        }
+
+        .errors ul {
+            padding-left: 20px;
+        }
+
+        .errors li {
+            list-style-type: disc;
+            color: #f44336;
+        }
+
+        /* Smooth fade-in animation for the modal */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Close button styles */
+        .close-btn {
+            background-color: transparent;
+            border: none;
+            font-size: 30px;
+            color: #ff6347;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-print"></i> Printer Status Dashboard</h1>
+        </header>
+
+        <div id="errorContainer" class="error-message hidden">
+            <strong>Error:</strong> <span id="errorMessage"></span>
+        </div>
+
+        <div id="successContainer" class="success-message hidden">
+            <strong>Success:</strong> <span id="successMessage"></span>
+        </div>
+
+        <div class="dashboard-controls">
+            <div class="search-box">
+                <input type="text" id="ipSearch" class="search-input" placeholder="Enter printer IP address...">
+                <button id="checkSinglePrinter" class="search-btn">
+                    <i class="fas fa-search"></i>
+                </button>
+            </div>
+
+            <button id="refreshAll" class="btn btn-primary">
+                <i class="fas fa-sync-alt"></i> Refresh All Printers
+            </button>
+
+            <div class="auto-refresh-container">
+                <label class="switch">
+                    <input type="checkbox" id="autoRefreshToggle">
+                    <span class="slider"></span>
+                </label>
+                <span>Auto Refresh (5m)</span>
+            </div>
+        </div>
+
+        <div id="printerGrid" class="printer-grid">
+            <!-- Printer cards will be dynamically inserted here -->
+        </div>
+
+    </div>
+
+    <div id="loadingOverlay" class="loading-overlay hidden">
+        <div class="loading-spinner"></div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const printerGrid = document.getElementById('printerGrid');
+            const refreshAllBtn = document.getElementById('refreshAll');
+            const ipSearchInput = document.getElementById('ipSearch');
+            const checkSinglePrinterBtn = document.getElementById('checkSinglePrinter');
+            const autoRefreshToggle = document.getElementById('autoRefreshToggle');
+
+            const loadingOverlay = document.getElementById('loadingOverlay');
+            const errorContainer = document.getElementById('errorContainer');
+            const errorMessage = document.getElementById('errorMessage');
+            const successContainer = document.getElementById('successContainer');
+            const successMessage = document.getElementById('successMessage');
+
+            let autoRefreshInterval;
+            const REFRESH_INTERVAL = 5 * 60 * 1000; // 5 minutes
+
+            // API endpoints
+            const API_BASE = '../../web/pytesting'; // Update this to the correct URL
+            const SINGLE_PRINTER_API = '/treeview.json'; // Updated endpoint
+            const ALL_PRINTERS_API = '/treeview.json';
+            const FALLBACK_API = 'treeview.json';
+
+            // Function to show success message
+            function showSuccess(message) {
+                successMessage.textContent = message;
+                successContainer.classList.remove('hidden');
+                // Auto-hide after 5 seconds
+                setTimeout(() => {
+                    successContainer.classList.add('hidden');
+                }, 5000);
+            }
+
+            // Function to handle auto-refresh toggle
+            autoRefreshToggle.addEventListener('change', function () {
+                if (this.checked) {
+                    // Start auto-refresh
+                    autoRefreshInterval = setInterval(fetchPrinters, REFRESH_INTERVAL);
+                    showSuccess("Auto-refresh enabled. Refreshing every 5 minutes.");
+                } else {
+                    // Stop auto-refresh
+                    clearInterval(autoRefreshInterval);
+                    showSuccess("Auto-refresh disabled.");
+                }
+            });
+
+            // Handle single printer check
+            checkSinglePrinterBtn.addEventListener('click', function () {
+                const ip = ipSearchInput.value.trim();
+                if (ip) {
+                    checkSinglePrinter(ip);
+                } else {
+                    showError("Please enter a valid IP address");
+                }
+            });
+
+            // Allow Enter key in search box
+            ipSearchInput.addEventListener('keypress', function (e) {
+                if (e.key === 'Enter') {
+                    checkSinglePrinterBtn.click();
+                }
+            });
+
+            // Check a single printer by IP
+            async function checkSinglePrinter(ip) {
+                try {
+                    showLoading();
+                    hideError();
+
+                    const response = await fetch(`${API_BASE}${SINGLE_PRINTER_API}${ip}`);
+                    if (!response.ok) {
+                        throw new Error(`Failed to check printer: ${response.statusText}`);
+                    }
+
+                    const data = await response.json();
+
+                    // Update grid with just this printer or add it if not present
+                    const formattedData = parseTreeViewData(data.printer);
+
+                    // Check if printer already exists in grid
+                    const existingCard = document.querySelector(`.printer-card[data-ip="${ip}"]`);
+                    if (existingCard) {
+                        // Update existing card
+                        const updatedCard = createPrinterCard(formattedData);
+                        existingCard.replaceWith(updatedCard);
+                    } else {
+                        // Add new card at the beginning
+                        const newCard = createPrinterCard(formattedData);
+                        if (printerGrid.firstChild) {
+                            printerGrid.insertBefore(newCard, printerGrid.firstChild);
+                        } else {
+                            printerGrid.appendChild(newCard);
+                        }
+                    }
+
+                    showSuccess(`Printer ${ip} checked successfully!`);
+                } catch (error) {
+                    showError(`Error checking printer ${ip}: ${error.message}`);
+                    console.error('Error checking printer:', error);
+                } finally {
+                    hideLoading();
+                }
+            }
+
+            // Fetch and process all printers from JSON
+            async function fetchPrinters() {
+                try {
+                    showLoading();
+                    hideError();
+
+                    const response = await fetch(`${API_BASE}${ALL_PRINTERS_API}`, {
+                        headers: {
+                            'Accept': 'application/json'
+                        }
+                    });
+
+                    if (!response.ok) {
+                        throw new Error('Failed to fetch printer data');
+                    }
+
+                    // Log the raw response text to see what is being returned
+                    const responseText = await response.text();
+                    console.log("Response Text:", responseText);
+
+                    // Now try parsing the response only if it's valid JSON
+                    const data = JSON.parse(responseText);
+
+                    const formattedData = data.results.map(parseTreeViewData);
+                    renderPrinterGrid(formattedData);
+
+                    if (data.errors && data.errors.length > 0) {
+                        const errorCount = data.errors.length;
+                        showError(`${errorCount} printer(s) could not be reached. See details in the cards.`);
+                    } else {
+                        showSuccess("All printers updated successfully!");
+                    }
+                } catch (error) {
+                    showError(`Error fetching printers: ${error.message}. Trying fallback...`);
+                    console.error('Error fetching printers:', error);
+
+                    // Try fallback to static JSON file
+                    try {
+                        const fallbackResponse = await fetch(`${FALLBACK_API}`);
+                        if (fallbackResponse.ok) {
+                            const fallbackData = await fallbackResponse.json();
+                            console.log("Fallback Data:", fallbackData);
+                            const formattedFallbackData = fallbackData.results.map(parseTreeViewData);
+                            renderPrinterGrid(formattedFallbackData);
+                        } else {
+                            throw new Error('Fallback also failed');
+                        }
+
+                    } catch (fallbackError) {
+                        showError(`Both live data and fallback failed. Please try again later.`);
+                        console.error('Fallback error:', fallbackError);
+                    }
+                } finally {
+                    hideLoading();
+                }
+            }
+
+            // Convert TreeView JSON into the expected format
+            function parseTreeViewData(treeNode) {
+                const ip = treeNode.RootNode;
+                let name = "Unknown Printer";
+                let status = treeNode.Status || "good";
+                let consumables = [];
+                let trays = [];
+                let errors = [];
+
+                treeNode.Children.forEach(child => {
+                    const text = child.Text;
+
+                    if (text.includes('Cartridge') || text.includes('toner') || text.includes('Toner')) {
+                        // Parse consumable information
+                        const parts = text.split(':');
+                        if (parts.length > 1) {
+                            const consumableName = parts[0].trim();
+                            const level = parts[1].trim();
+
+                            // Determine level percentage if possible
+                            let percentage = 0;
+                            if (level.includes('%')) {
+                                percentage = parseInt(level.match(/\d+/)) || 0;
+                            } else if (level.toLowerCase().includes('ok') || level.toLowerCase().includes('good')) {
+                                percentage = 75; // Arbitrary "good" level
+                            } else if (level.toLowerCase().includes('low')) {
+                                percentage = 25; // Arbitrary "low" level
+                            } else if (level.toLowerCase().includes('empty') || level.toLowerCase().includes('replace')) {
+                                percentage = 5; // Almost empty
+                            }
+
+                            consumables.push({
+                                name: consumableName,
+                                level: level,
+                                percentage: percentage
+                            });
+                        }
+                    } else if (text.includes('Tray') || text.includes('tray')) {
+                        // Parse tray information
+                        const parts = text.split(':');
+                        if (parts.length > 1) {
+                            trays.push({
+                                name: parts[0].trim(),
+                                status: parts[1].trim()
+                            });
+                        }
+                    } else if (text.includes('error') || text.includes('Error') || text.includes('warning') || text.includes('Warning')) {
+                        // Parse error information
+                        errors.push(text);
+                    } else if (!text.includes(ip)) {
+                        // If not the IP address and doesn't match other categories, it might be the printer name
+                        name = text;
+                    }
+                });
+
+                return {
+                    ip: ip,
+                    name: name,
+                    status: status,
+                    consumables: consumables,
+                    trays: trays,
+                    errors: errors
+                };
+            }
+
+            // Render the printer grid with formatted data
+            function renderPrinterGrid(printersData) {
+                // Clear the current grid
+                printerGrid.innerHTML = '';
+
+                // Add printer cards
+                printersData.forEach(printer => {
+                    const printerCard = createPrinterCard(printer);
+                    printerGrid.appendChild(printerCard);
+                });
+            }
+
+            // Create a printer card from formatted data
+            function createPrinterCard(printer) {
+                const card = document.createElement('div');
+                card.className = 'printer-card';
+                card.setAttribute('data-ip', printer.ip);
+
+                // Add offline overlay if printer is offline
+                if (printer.status === 'offline') {
+                    const offlineOverlay = document.createElement('div');
+                    offlineOverlay.className = 'offline-overlay';
+                    offlineOverlay.innerHTML = '<div class="offline-message">OFFLINE</div>';
+                    card.appendChild(offlineOverlay);
+                }
+
+                // Create printer header
+                const header = document.createElement('div');
+                header.className = 'printer-header';
+
+                let statusClass = 'status-good';
+                if (printer.status === 'offline') {
+                    statusClass = 'status-offline';
+                } else if (printer.errors.length > 0) {
+                    statusClass = 'status-error';
+                } else if (printer.consumables.some(c => c.percentage < 20)) {
+                    statusClass = 'status-warning';
+                }
+
+                header.innerHTML = `
+        <div>
+            <span class="status-indicator ${statusClass}"></span>
+            <span class="printer-name">${printer.name}</span>
+        </div>
+        <span class="printer-ip">${printer.ip}</span>
+    `;
+                card.appendChild(header);
+
+                // Create printer body
+                const body = document.createElement('div');
+                body.className = 'printer-body';
+
+                // Add consumables
+                printer.consumables.forEach(consumable => {
+                    const consumableDiv = document.createElement('div');
+                    consumableDiv.className = 'consumable';
+
+                    let fillClass = 'bg-success';
+                    if (consumable.percentage < 20) {
+                        fillClass = 'bg-danger';
+                    } else if (consumable.percentage < 40) {
+                        fillClass = 'bg-warning';
+                    }
+
+                    consumableDiv.innerHTML = `
+            <div class="consumable-name">
+                ${consumable.name}
+                <span>${consumable.percentage}%</span>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill ${fillClass}" style="width: ${consumable.percentage}%"></div>
+            </div>
+        `;
+                    body.appendChild(consumableDiv);
+                });
+
+                // Add tray status summary if available
+                if (printer.trays.length > 0) {
+                    const trayDiv = document.createElement('div');
+                    trayDiv.className = 'tray-status';
+                    trayDiv.innerHTML = '<strong>Paper Trays:</strong>';
+
+                    const trayList = document.createElement('ul');
+                    printer.trays.forEach(tray => {
+                        const trayItem = document.createElement('li');
+                        trayItem.textContent = `${tray.name}: ${tray.status}`;
+                        trayList.appendChild(trayItem);
+                    });
+
+                    trayDiv.appendChild(trayList);
+                    body.appendChild(trayDiv);
+                }
+
+                card.appendChild(body);
+
+                // Create printer footer with a details button
+                const footer = document.createElement('div');
+                footer.className = 'printer-footer';
+
+                const detailsButton = document.createElement('button');
+                detailsButton.className = 'btn btn-primary';
+                detailsButton.innerHTML = '<i class="fas fa-info-circle"></i> View Details';
+                detailsButton.addEventListener('click', () => {
+                    showPrinterDetailsModal(printer);
+                });
+
+                footer.appendChild(detailsButton);
+                card.appendChild(footer);
+
+                return card;
+            }
+
+            // Show printer details modal
+            function showPrinterDetailsModal(printer) {
+                // Remove any existing modal
+                const existingModal = document.querySelector('.printer-details-modal');
+                if (existingModal) {
+                    existingModal.remove();
+                }
+
+                // Create modal container
+                const modal = document.createElement('div');
+                modal.className = 'printer-details-modal';
+
+                // Modal content
+                const modalContent = document.createElement('div');
+                modalContent.className = 'modal-content';
+
+                // Modal header
+                const modalHeader = document.createElement('div');
+                modalHeader.className = 'modal-header';
+                modalHeader.innerHTML = `
+        <h3>${printer.name}</h3>
+        <button class="close-btn">&times;</button>
+    `;
+                modalContent.appendChild(modalHeader);
+
+                // Modal body
+                const modalBody = document.createElement('div');
+                modalBody.className = 'modal-body';
+
+                // Basic info section
+                const basicInfo = document.createElement('div');
+                basicInfo.innerHTML = `
+        <h4>Basic Information</h4>
+        <p><strong>IP Address:</strong> ${printer.ip}</p>
+        <p><strong>Status:</strong> ${printer.status === 'offline' ? 'Offline' : 'Online'}</p>
+    `;
+                modalBody.appendChild(basicInfo);
+
+                // Consumables section
+                if (printer.consumables.length > 0) {
+                    const consumablesSection = document.createElement('div');
+                    consumablesSection.className = 'consumables';
+                    consumablesSection.innerHTML = '<h4>Consumables</h4>';
+
+                    printer.consumables.forEach(consumable => {
+                        const consumableDiv = document.createElement('div');
+                        consumableDiv.innerHTML = `
+                <strong>${consumable.name}:</strong> ${consumable.level} (${consumable.percentage}%)
+            `;
+                        consumablesSection.appendChild(consumableDiv);
+                    });
+
+                    modalBody.appendChild(consumablesSection);
+                }
+
+                // Trays section
+                if (printer.trays.length > 0) {
+                    const traysSection = document.createElement('div');
+                    traysSection.className = 'trays';
+                    traysSection.innerHTML = '<h4>Paper Trays</h4>';
+
+                    printer.trays.forEach(tray => {
+                        const trayDiv = document.createElement('div');
+                        trayDiv.innerHTML = `
+                <strong>${tray.name}:</strong> ${tray.status}
+            `;
+                        traysSection.appendChild(trayDiv);
+                    });
+
+                    modalBody.appendChild(traysSection);
+                }
+
+                // Errors section
+                if (printer.errors.length > 0) {
+                    const errorsSection = document.createElement('div');
+                    errorsSection.className = 'errors';
+                    errorsSection.innerHTML = '<h4>Errors and Warnings</h4>';
+
+                    const errorsList = document.createElement('ul');
+                    printer.errors.forEach(error => {
+                        const errorItem = document.createElement('li');
+                        errorItem.textContent = error;
+                        errorsList.appendChild(errorItem);
+                    });
+
+                    errorsSection.appendChild(errorsList);
+                    modalBody.appendChild(errorsSection);
+                }
+
+                modalContent.appendChild(modalBody);
+                modal.appendChild(modalContent);
+
+                // Add modal to page
+                document.body.appendChild(modal);
+
+                // Add close functionality
+                const closeBtn = modal.querySelector('.close-btn');
+                closeBtn.addEventListener('click', () => {
+                    modal.remove();
+                });
+
+                // Close modal when clicking outside
+                modal.addEventListener('click', (e) => {
+                    if (e.target === modal) {
+                        modal.remove();
+                    }
+                });
+            }
+
+            // Show error message
+            function showError(message) {
+                errorMessage.textContent = message;
+                errorContainer.classList.remove('hidden');
+            }
+
+            // Hide error message
+            function hideError() {
+                errorContainer.classList.add('hidden');
+            }
+
+            // Show loading overlay
+            function showLoading() {
+                loadingOverlay.classList.remove('hidden');
+            }
+
+            // Hide loading overlay
+            function hideLoading() {
+                loadingOverlay.classList.add('hidden');
+            }
+
+            // Add event listener for refresh all
+            refreshAllBtn.addEventListener('click', fetchPrinters);
+
+            // Initial loading of printers
+            fetchPrinters();
+        });
+    </script>
+</body>
+
+</html>
