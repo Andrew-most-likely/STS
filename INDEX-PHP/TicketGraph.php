@@ -7,19 +7,12 @@ include('../db_connection.php');
 try {
     // Create a PDO instance
     $conn = new PDO("mysql:host=$servername;dbname=$dbname", $username, $password);
-    // Set the PDO error mode to exception
     $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-    // Query to fetch data from the view and order by date_created
-    $sql = "SELECT type, SUM(day_1_total) AS day_1_total,
-                   SUM(day_2_total) AS day_2_total,
-                   SUM(day_3_total) AS day_3_total,
-                   SUM(day_4_total) AS day_4_total,
-                   SUM(day_5_total) AS day_5_total,
-                   SUM(day_6_total) AS day_6_total,
-                   SUM(day_7_total) AS day_7_total
-            FROM ids_created_last_7_days 
-            GROUP BY type";
+    // Query to fetch data from the view and order by type
+    $sql = "SELECT type,
+                   day_1_total, day_2_total, day_3_total, day_4_total, day_5_total, day_6_total, day_7_total
+            FROM ids_created_last_7_days";
 
     // Prepare and execute the query
     $stmt = $conn->prepare($sql);
@@ -31,33 +24,62 @@ try {
     // Close the connection
     $conn = null;
 
-    // Prepare data for Chart.js
+    // Predefined color palette for datasets
+    $color_palette = [
+        '#FF5733', // Red
+        '#3498DB', // Blue
+        '#2ECC71', // Green
+        '#FF7F50', // Orange
+        '#9B59B6', // Purple
+        '#F39C12', // Yellow
+        '#1ABC9C'  // Teal
+    ];
+
+    // Prepare the datasets for Chart.js
     $datasets = [];
+    $color_index = 0; // Start with the first color in the palette
     foreach ($data as $row) {
         $type = str_replace('_', ' ', $row['type']); // Replace underscores with spaces
-        $day_totals = array_slice($row, 1); // Exclude the 'type' column
+
+        // Map the days' totals into an array and filter out zero/empty values
+        $day_totals = [
+            $row['day_1_total'], $row['day_2_total'], $row['day_3_total'], 
+            $row['day_4_total'], $row['day_5_total'], $row['day_6_total'], $row['day_7_total']
+        ];
+
+        // Filter out zero values (optional: depending on whether you want to skip these days)
+        $filtered_day_totals = array_map('intval', $day_totals);
+
+        // Prepare the dataset for this type
         $datasets[] = [
             'label' => $type,
-            'data' => array_values($day_totals)
+            'data' => $filtered_day_totals,
+            'fill' => false, // Disable the area fill
+            'borderColor' => $color_palette[$color_index % count($color_palette)], // Use the color from the predefined palette
+            'tension' => 0.4 // Enable smooth curve interpolation
         ];
+
+        // Move to the next color for the next dataset
+        $color_index++;
     }
 
     // Generate labels for the last 7 days
     $today = strtotime('today');
     $labels = [];
-    for ($i = 6; $i >= 0; $i--) {
-        $labels[] = date('m/d', strtotime("-$i days", $today));
+    for ($i = 0; $i <= 6; $i++) {
+        $labels[] = date('m/d', strtotime("-$i days", $today)); // Date format for X-axis (e.g., "04/03")
     }
 
-    // Encode data to JSON format for Chart.js
+    // Prepare the chart data
     $chart_data = [
-        'labels' => $labels,
+        'labels' => array_reverse($labels), // Reverse to start from the oldest day
         'datasets' => $datasets
     ];
 
-    // Output JSON
+    // Output the chart data as JSON
+    header('Content-Type: application/json');
     echo json_encode($chart_data);
 } catch(PDOException $e) {
-    echo "Connection failed: " . $e->getMessage();
+    echo json_encode(["error" => "Connection failed: " . $e->getMessage()]);
 }
 ?>
