@@ -100,7 +100,7 @@ function renderRows(data, columns) {
             ${columns.map(column => {
                 if (column === 'Podium' || column === 'Tablet' || column === 'Projector') {
                     const value = row[column];
-                    const isWorking = value === 'No';
+                    const isWorking = value === 'yes';
                     return `
                         <td>
                             <span class="${isWorking ? 'status-working' : 'status-broken'}">
