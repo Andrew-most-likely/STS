@@ -505,7 +505,7 @@ fetchRoomData();
           approveBtn.disabled = true;
           denyBtn.disabled = true;
       
-          fetch('update_status.php', {
+          fetch('../INDEX-PHP/update_status.php', {
             method: 'POST',
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
             body: `id=${id}&status=${status}`
