@@ -223,7 +223,45 @@
                         <i class="fas fa-chart-bar"></i>
                     </div>
                     <div class="box-content">
-                        <canvas id="quickStatsChart"></canvas>
+                        
+                        
+                        <form id="FieldWorkSubmitForm" action="../FORM-PHP/FWSubmit.php" method="post" onsubmit="recordFormSubmitTime()">
+
+
+                            <h2>Field Work Form</h2>
+                            <div class="decorative-line"></div>
+                            <label for="Work_Description">Work Done:</label>
+                            <input type="text" id="Work_Description" name="Work_Description" required>
+                    
+                            <label for="Ticket_Number">Ticket Number or Task:</label>
+                            <input type="text" id="Ticket_Number" name="Ticket_Number">
+                    
+                            <div style="margin-bottom: 25px;" class="slider-container">
+                                <label for="range">Task Difficulty:</label>
+                                <input type="range" name="range" id="range" min="1" max="5" step="1" value="1" list="values" required/>
+                                <datalist id="values">
+                                    <option value="1"></option>
+                                    <option value="2"></option>
+                                    <option value="3"></option>
+                                    <option value="4"></option>
+                                    <option value="5"></option>
+                                </datalist>
+                            </div>
+                            
+                            <input type="hidden" id="form_submit_time" name="form_submit_time" value="">
+                            <div class="decorative-line"></div>
+                            <input type="submit" value="Submit">
+            
+                        </form>
+            
+                        <script>
+                            function recordFormSubmitTime() {
+                                document.getElementById('form_submit_time').value = new Date().toISOString();
+                            }
+                        </script>
+
+
+
                     </div>
                 </div>
             </div>
