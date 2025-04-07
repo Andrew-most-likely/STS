@@ -99,6 +99,17 @@
         max-width: 100%;
     }
 
+    form{
+    margin-top: initial;
+    background-color: initial;
+    padding: initial;
+    border-radius: initial;
+    box-shadow: initial;
+    max-width: initial;
+    width: initial;
+    }
+
+
     /* Ensure chart containers are responsive */
     canvas {
         max-width: 100%;
@@ -219,7 +230,7 @@
 
                 <div class="box bottom-box">
                     <div class="box-header">
-                        <h2>Quick Stats</h2>
+                        <h2>Field Work Form</h2>
                         <i class="fas fa-chart-bar"></i>
                     </div>
                     <div class="box-content">
@@ -228,8 +239,6 @@
                         <form id="FieldWorkSubmitForm" action="../FORM-PHP/FWSubmit.php" method="post" onsubmit="recordFormSubmitTime()">
 
 
-                            <h2>Field Work Form</h2>
-                            <div class="decorative-line"></div>
                             <label for="Work_Description">Work Done:</label>
                             <input type="text" id="Work_Description" name="Work_Description" required>
                     
