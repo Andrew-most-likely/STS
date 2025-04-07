@@ -15,6 +15,10 @@
     if (sessionStorage.getItem('isLoggedIn') !== 'true') {
         window.location.href = '../index.html'; // Redirect to login page if not logged in
     } 
+    if (sessionStorage.getItem('is_staff') === false || sessionStorage.getItem('is_staff') === undefined) {
+        // If user is undefined, redirect or show a message
+        window.location.href = '../main.html';  // Redirect to the login page or display a message
+    }
 </script>
 
 <head>
