@@ -30,6 +30,7 @@
     .box-container {
         flex-direction: initial;
         align-items: initial;
+        height: 100%;
     }
 
     /* Styles for larger screens - keep search bar visible */
@@ -121,6 +122,27 @@
     color: #f5b301;
     font-size: 1.1rem;
   }
+  .btn {
+    padding: 6px 14px;
+    margin-right: 10px;
+    border: none;
+    border-radius: 6px;
+    background-color: #007bff;
+    color: white;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background 0.2s;
+  }
+
+  .btn.deny-btn {
+    background-color: #dc3545;
+  }
+
+  .btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+
 </style>
 
 <body onload="fetchChildGroups(); loadTheme();">
@@ -438,45 +460,71 @@ fetchRoomData();
       
         function createCardHTML(request) {
           return `
-            <div class="carousel-card">
+            <div class="carousel-card show" id="card-${request.id}">
               <h3>Ticket: ${request.ticket}</h3>
               <p><strong>Submitted by:</strong> ${request.name}</p>
               <p><strong>Work Description:</strong> ${request.description}</p>
               <p><strong>Difficulty:</strong> <span class="difficulty-rating">${'★'.repeat(request.difficulty)}</span></p>
               <p><strong>Time:</strong> ${request.time}</p>
+              <div class="action-buttons" style="margin-top: 10px;">
+                <button class="btn approve-btn" onclick="updateStatus(${request.id}, 'approved')">Approve</button>
+                <button class="btn deny-btn" onclick="updateStatus(${request.id}, 'denied')">Deny</button>
+              </div>
             </div>
           `;
         }
       
-        function showNextCard() {
-          if (requests.length === 0) {
+        function showCurrentCard() {
+          if (requests.length === 0 || currentIndex >= requests.length) {
             feedContainer.innerHTML = '<div class="carousel-card show">No pending requests</div>';
             return;
           }
-      
           feedContainer.innerHTML = createCardHTML(requests[currentIndex]);
-          const card = feedContainer.querySelector('.carousel-card');
-      
-          // Force reflow before fade in
-          void card.offsetWidth;
-          card.classList.add('show');
-      
-          currentIndex = (currentIndex + 1) % requests.length;
-      
-          setTimeout(() => {
-            card.classList.remove('show');
-            setTimeout(showNextCard, 600); // Delay after fade out
-          }, 4000); // Time per card
         }
       
-        fetch('../INDEX-PHP/admin.php')
+        function updateStatus(id, status) {
+          const card = document.getElementById(`card-${id}`);
+          const approveBtn = card.querySelector('.approve-btn');
+          const denyBtn = card.querySelector('.deny-btn');
+      
+          // Disable buttons
+          approveBtn.disabled = true;
+          denyBtn.disabled = true;
+      
+          fetch('update_status.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: `id=${id}&status=${status}`
+          })
+          .then(res => res.json())
+          .then(data => {
+            if (data.success) {
+              card.classList.remove('show');
+              setTimeout(() => {
+                currentIndex++;
+                showCurrentCard();
+              }, 600); // Match transition duration
+            } else {
+              alert('Failed to update status');
+              approveBtn.disabled = false;
+              denyBtn.disabled = false;
+            }
+          })
+          .catch(() => {
+            alert('Request failed');
+            approveBtn.disabled = false;
+            denyBtn.disabled = false;
+          });
+        }
+      
+        fetch('get_pending_requests.php')
           .then(res => res.json())
           .then(data => {
             requests = data;
-            if (requests.length > 0) showNextCard();
-            else feedContainer.innerHTML = '<div class="carousel-card show">No pending requests</div>';
+            showCurrentCard();
           });
-    </script>
+      </script>
+      
     <script>
         // Modify existing sidebar toggle functionality for mobile
         document.addEventListener('DOMContentLoaded', function () {
