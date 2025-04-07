@@ -109,7 +109,7 @@ table th {
                     <i class="fa-solid fa-print"></i>
                     <span>Printer Check</span>
                 </button>
-                <button id="tab7" class="sidebar-button" onclick="location.href='../INDEX-HTML/test.html'">
+                <button id="tab7" class="sidebar-button" onclick="location.href='../INDEX-HTML/main.html'">
                     <i class="fa-regular fa-chart-bar"></i>
                     <span>Worker Stats</span>
                 </button>
@@ -145,8 +145,7 @@ table th {
 
         <div class="search-container">
             <input type="text" id="searchInput" placeholder="Search for assets, tickets, or users...">
-            <button data-emoji="✨" type="submit" class="submit"><img src="../ASSETS/search.png" alt="Search" width="20"
-                    height="20"></button>
+            <button data-emoji="✨" type="submit" class="submit"><i class="fa-solid fa-magnifying-glass"></i></button>
         </div>
         <div class="profile" id="profile">
             <div class="profile-icon" id="profileIcon">U</div>

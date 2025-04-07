@@ -43,9 +43,9 @@ try {
     $stmt->bindParam(7, $room_notes);
 
     // Handle checkbox values
-    $conditionA = isset($_POST['conditionA']) ? 'No' : 'Yes';
-    $conditionB = isset($_POST['conditionB']) ? 'No' : 'Yes';
-    $conditionC = isset($_POST['conditionC']) ? 'No' : 'Yes';
+    $conditionA = isset($_POST['conditionA']) ? 'Working' : 'Broken';
+    $conditionB = isset($_POST['conditionB']) ? 'Working' : 'Broken';
+    $conditionC = isset($_POST['conditionC']) ? 'Working' : 'Broken';
     $stmt->bindParam(8, $conditionA);
     $stmt->bindParam(9, $conditionB);
     $stmt->bindParam(10, $conditionC);
