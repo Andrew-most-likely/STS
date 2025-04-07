@@ -469,7 +469,7 @@ fetchRoomData();
           }, 4000); // Time per card
         }
       
-        fetch('admin.php')
+        fetch('../INDEX-PHP/admin.php')
           .then(res => res.json())
           .then(data => {
             requests = data;
