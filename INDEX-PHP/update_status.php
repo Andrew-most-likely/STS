@@ -20,21 +20,34 @@ if (!in_array($status, $validStatuses)) {
     exit;
 }
 
-// Prepare and execute SQL update
+// Connect to DB
 $conn = new mysqli($servername, $username, $password, $dbname);
-
 if ($conn->connect_error) {
     echo json_encode(['success' => false, 'message' => 'Database connection failed']);
     exit;
 }
 
+// Prepare and run update
 $stmt = $conn->prepare("UPDATE Field_Work SET status = ? WHERE id = ?");
+if (!$stmt) {
+    echo json_encode([
+        'success' => false,
+        'message' => 'Prepare failed',
+        'error' => $conn->error
+    ]);
+    exit;
+}
+
 $stmt->bind_param("si", $status, $id);
 
 if ($stmt->execute()) {
     echo json_encode(['success' => true]);
 } else {
-    echo json_encode(['success' => false, 'message' => 'Update failed']);
+    echo json_encode([
+        'success' => false,
+        'message' => 'Execution failed',
+        'error' => $stmt->error
+    ]);
 }
 
 $stmt->close();

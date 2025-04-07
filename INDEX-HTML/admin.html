@@ -270,9 +270,9 @@
                     <h2>Quick Stats</h2>
                     <i class="fas fa-chart-bar"></i>
                 </div>
-                <div class="box-content" id="requestFeedCarousel" style="display: flex; gap: 1rem; flex-wrap: wrap;">
+                <div class="box-content" id="requestFeedCarousel">
                     <!-- Cards will rotate here -->
-                  </div>
+                  </div>                  
             </div>
         </div>
 
@@ -464,12 +464,12 @@ fetchRoomData();
     <script src='https://cdn.jsdelivr.net/npm/js-confetti@latest/dist/js-confetti.browser.js'></script>
     <script>
         const feedContainer = document.getElementById('requestFeedCarousel');
-        let requests = [];
         let currentIndex = 0;
+        let requests = [];
       
         function createCardHTML(request) {
           return `
-            <div class="carousel-card show" id="card-${request.id}" style="flex: 1 1 calc(50% - 0.5rem); max-width: calc(50% - 0.5rem); transition: opacity 0.5s ease;">
+            <div class="carousel-card show" id="card-${request.id}">
               <h3>Ticket: ${request.ticket}</h3>
               <p><strong>Submitted by:</strong> ${request.name}</p>
               <p><strong>Work Description:</strong> ${request.description}</p>
@@ -483,71 +483,56 @@ fetchRoomData();
           `;
         }
       
-        function renderNextCards() {
-  feedContainer.innerHTML = '';
-
-  const cardsToShow = requests.slice(0, 2); // Always show first 2
-  if (cardsToShow.length === 0) {
-    feedContainer.innerHTML = '<div class="carousel-card">No pending requests</div>';
-    return;
-  }
-
-  for (let request of cardsToShow) {
-    feedContainer.innerHTML += createCardHTML(request);
-  }
-}
-
+        function showCurrentCard() {
+          if (requests.length === 0 || currentIndex >= requests.length) {
+            feedContainer.innerHTML = '<div class="carousel-card show">No pending requests</div>';
+            return;
+          }
+          feedContainer.innerHTML = createCardHTML(requests[currentIndex]);
+        }
       
         function updateStatus(id, status) {
-  const card = document.getElementById(`card-${id}`);
-  const approveBtn = card.querySelector('.approve-btn');
-  const denyBtn = card.querySelector('.deny-btn');
-
-  approveBtn.disabled = true;
-  denyBtn.disabled = true;
-
-  fetch('../INDEX-PHP/update_status.php', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-    body: `id=${id}&status=${status}`
-  })
-  .then(res => res.json())
-  .then(data => {
-    if (data.success) {
-      // Fade out the card
-      card.style.opacity = '0';
-      card.style.transition = 'opacity 0.5s ease';
-
-      setTimeout(() => {
-        // Remove from the list
-        requests = requests.filter(r => r.id !== id);
-
-        // Re-render cards
-        renderNextCards();
-      }, 500);
-    } else {
-      alert('Failed to update status.');
-      approveBtn.disabled = false;
-      denyBtn.disabled = false;
-    }
-  })
-  .catch(() => {
-    alert('Network error');
-    approveBtn.disabled = false;
-    denyBtn.disabled = false;
-  });
-}
-
+          const card = document.getElementById(`card-${id}`);
+          const approveBtn = card.querySelector('.approve-btn');
+          const denyBtn = card.querySelector('.deny-btn');
       
-        // Fetch pending requests
+          // Disable buttons
+          approveBtn.disabled = true;
+          denyBtn.disabled = true;
+      
+          fetch('../INDEX-PHP/update_status.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: `id=${id}&status=${status}`
+          })
+          .then(res => res.json())
+          .then(data => {
+            if (data.success) {
+              card.classList.remove('show');
+              setTimeout(() => {
+                currentIndex++;
+                showCurrentCard();
+              }, 600); // Match transition duration
+            } else {
+              alert('Failed to update status');
+              approveBtn.disabled = false;
+              denyBtn.disabled = false;
+            }
+          })
+          .catch(() => {
+            alert('Request failed');
+            approveBtn.disabled = false;
+            denyBtn.disabled = false;
+          });
+        }
+      
         fetch('../INDEX-PHP/admin.php')
           .then(res => res.json())
           .then(data => {
             requests = data;
-            renderNextCards();
+            showCurrentCard();
           });
       </script>
-      
       
     <script>
         // Modify existing sidebar toggle functionality for mobile
