@@ -484,58 +484,60 @@ fetchRoomData();
         }
       
         function renderNextCards() {
-          feedContainer.innerHTML = '';
-      
-          const cardsToShow = requests.slice(currentIndex, currentIndex + 2);
-          if (cardsToShow.length === 0) {
-            feedContainer.innerHTML = '<div class="carousel-card show">No pending requests</div>';
-            return;
-          }
-      
-          for (let request of cardsToShow) {
-            feedContainer.innerHTML += createCardHTML(request);
-          }
-        }
+  feedContainer.innerHTML = '';
+
+  const cardsToShow = requests.slice(0, 2); // Always show first 2
+  if (cardsToShow.length === 0) {
+    feedContainer.innerHTML = '<div class="carousel-card">No pending requests</div>';
+    return;
+  }
+
+  for (let request of cardsToShow) {
+    feedContainer.innerHTML += createCardHTML(request);
+  }
+}
+
       
         function updateStatus(id, status) {
-          const card = document.getElementById(`card-${id}`);
-          const approveBtn = card.querySelector('.approve-btn');
-          const denyBtn = card.querySelector('.deny-btn');
-      
-          approveBtn.disabled = true;
-          denyBtn.disabled = true;
-      
-          fetch('../INDEX-PHP/update_status.php', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-            body: `id=${id}&status=${status}`
-          })
-          .then(res => res.json())
-          .then(data => {
-            if (data.success) {
-              // Fade out the card
-              card.style.opacity = '0';
-      
-              // Delay before removing and replacing
-              setTimeout(() => {
-                // Remove it from DOM and from the queue
-                requests = requests.filter(r => r.id !== id);
-      
-                // If fewer than 2 shown, try adding one more to maintain 2
-                renderNextCards();
-              }, 500);
-            } else {
-              alert('Update failed');
-              approveBtn.disabled = false;
-              denyBtn.disabled = false;
-            }
-          })
-          .catch(() => {
-            alert('Request failed');
-            approveBtn.disabled = false;
-            denyBtn.disabled = false;
-          });
-        }
+  const card = document.getElementById(`card-${id}`);
+  const approveBtn = card.querySelector('.approve-btn');
+  const denyBtn = card.querySelector('.deny-btn');
+
+  approveBtn.disabled = true;
+  denyBtn.disabled = true;
+
+  fetch('update_status.php', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: `id=${id}&status=${status}`
+  })
+  .then(res => res.json())
+  .then(data => {
+    if (data.success) {
+      // Fade out the card
+      card.style.opacity = '0';
+      card.style.transition = 'opacity 0.5s ease';
+
+      setTimeout(() => {
+        // Remove from the list
+        requests = requests.filter(r => r.id !== id);
+
+        // Re-render cards
+        renderNextCards();
+      }, 500);
+    } else {
+      alert('Failed to update status.');
+      approveBtn.disabled = false;
+      denyBtn.disabled = false;
+    }
+  })
+  .catch(() => {
+    alert('Network error');
+    approveBtn.disabled = false;
+    denyBtn.disabled = false;
+  });
+}
+
       
         // Fetch pending requests
         fetch('../INDEX-PHP/admin.php')
