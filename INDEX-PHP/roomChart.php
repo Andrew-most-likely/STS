@@ -20,7 +20,7 @@ try {
     $checkedRooms = $result['checked_rooms'];
 
     // Expected number of room checks per day
-    $expectedRooms = 30;
+    $expectedRooms = 280;
 
     // Calculate unchecked rooms based on expectation
     $uncheckedRooms = max($expectedRooms - $checkedRooms, 0); // Avoid negatives
