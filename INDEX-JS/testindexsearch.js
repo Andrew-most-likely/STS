@@ -42,7 +42,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     // Navigate to detail page
                     if (result.id && result.table) {
                         // This will navigate to the raw data page with the specific view and highlight
-                        window.location.href = `../INDEX-HTML/expand.html?view=${result.table}&highlight=${result.id}`;
+                        window.location.href = `../INDEX-HTML/Raw-Data.html?view=${result.table}&highlight=${result.id}`;
                     }
                 });
                 

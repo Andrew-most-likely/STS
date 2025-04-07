@@ -1,5 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
+
+
 <script>
     // Check if the user is logged in (i.e., if 'userName' exists in sessionStorage)
     if (sessionStorage.getItem('userName') === null || sessionStorage.getItem('userName') === undefined) {
@@ -13,6 +15,10 @@
     if (sessionStorage.getItem('isLoggedIn') !== 'true') {
         window.location.href = '../index.html'; // Redirect to login page if not logged in
     } 
+    if (sessionStorage.getItem('is_staff') === 'true') {
+        // If user is staff, redirect to staff page
+        window.location.href = 'admin.html';  // Redirect to the staff page 
+    }
 </script>
 
 <head>
@@ -28,6 +34,7 @@
     .box-container {
         flex-direction: initial;
         align-items: initial;
+        height: 100%;
     }
 
     /* Styles for larger screens - keep search bar visible */
@@ -196,117 +203,211 @@
         </div>
     </div>
 
-<!-- Main Content Area -->
-<div class="main-content" id="mainContent">
-    <div class="box-container">
-        <div class="box-left-column">
-            <div class="box top-box">
-                <div class="box-header">
-                    <h2>Weekly Recap</h2>
-                    <i class="fas fa-sync-alt"></i>
+    <!-- Main Content Area -->
+    <div class="main-content" id="mainContent">
+        <div class="box-container">
+            <div class="box-left-column">
+                <div class="box top-box">
+                    <div class="box-header">
+                        <h2>Weekly Recap</h2>
+                        <i class="fas fa-sync-alt"></i>
+                    </div>
+                    <div class="box-content">
+                        <canvas id="weeklyRecapChart" width="200" height="250"></canvas>
+                    </div>
                 </div>
-                <div class="box-content">
-                    <canvas id="weeklyRecapChart"></canvas>
+
+                <div class="box bottom-box">
+                    <div class="box-header">
+                        <h2>Quick Stats</h2>
+                        <i class="fas fa-chart-bar"></i>
+                    </div>
+                    <div class="box-content">
+                        <canvas id="quickStatsChart"></canvas>
+                    </div>
                 </div>
             </div>
 
-            <div class="box bottom-box">
-                <div class="box-header">
-                    <h2>Quick Stats</h2>
-                    <i class="fas fa-chart-bar"></i>
-                </div>
-                <div class="box-content">
-                    <canvas id="quickStatsChart"></canvas>
-                </div>
-            </div>
-        </div>
-
-        <div class="box-right-column">
-            <div class="box full-height-box">
-                <div class="box-header">
-                    <h2>Daily Tasks</h2>
-                    <i class="fas fa-user-chart"></i>
-                </div>
-                <div class="box-row">
-                    <div class="box-section">
-                        <div class="section-header">Printer's Checked Today</div>
-                        <div class="section-content">
-                            <canvas id="printersCheckedChart" width="200" height="200"></canvas>
-                        </div>
+            <div class="box-right-column">
+                <div class="box full-height-box">
+                    <div class="box-header">
+                        <h2>Daily Tasks</h2>
+                        <i class="fas fa-user-chart"></i>
                     </div>
-                    <div class="box-section">
-                        <div class="section-header">Rooms Checked Today</div>
-                        <div class="section-content">
-                            <canvas id="roomsCheckedChart" width="200" height="200"></canvas>
+                    <div class="box-row">
+                        <div class="box-section">
+                            <div class="section-header">Printer's Checked Today</div>
+                            <div class="section-content">
+                                <canvas id="PrinterCheck" width="200" height="200"></canvas>
+                            </div>
                         </div>
-                    </div>
-                </div>
-                <div class="box-section">
-                    <div class="section-header">Mail Check</div>
-                    <div class="section-content">
-                        <p>Yes</p> <!-- Displaying a simple Yes/No instead of a chart -->
+                        <div class="box-section">
+                            <div class="section-header">Rooms Checked Today</div>
+                            <div class="section-content">
+                                <canvas id="roomChart" width="200" height="200"></canvas>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
 
-<!-- Include Chart.js -->
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script>
-    function createLineChart(ctx, label, data) {
-        new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
-                datasets: [{
-                    label: label,
-                    data: data,
-                    fill: false,
-                    borderColor: 'rgba(54, 162, 235, 1)',
-                    tension: 0.4
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                scales: {
-                    y: {
-                        beginAtZero: true
-                    }
+    <!-- Include Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+
+
+
+        function createPieChart(ctx, label, data) {
+            new Chart(ctx, {
+                type: 'pie',
+                data: {
+                    labels: ['Checked', 'Not Checked'],
+                    datasets: [{
+                        label: label,
+                        data: data,
+                        backgroundColor: ['rgba(54, 162, 235, 0.5)', 'rgba(255, 99, 132, 0.5)'],
+                        borderColor: ['rgba(54, 162, 235, 1)', 'rgba(255, 99, 132, 1)'],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false
                 }
-            }
-        });
-    }
+            });
+        }
 
-    function createPieChart(ctx, label, data) {
-        new Chart(ctx, {
-            type: 'pie',
-            data: {
-                labels: ['Checked', 'Not Checked'],
-                datasets: [{
-                    label: label,
-                    data: data,
-                    backgroundColor: ['rgba(54, 162, 235, 0.5)', 'rgba(255, 99, 132, 0.5)'],
-                    borderColor: ['rgba(54, 162, 235, 1)', 'rgba(255, 99, 132, 1)'],
-                    borderWidth: 1
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false
-            }
-        });
-    }
+        async function fetchLineGraphData() {
+            try {
+                const response = await fetch('../INDEX-PHP/TicketGraph.php'); // Update the path to your PHP script
+                const data = await response.json();
 
-    document.addEventListener("DOMContentLoaded", function () {
-        createLineChart(document.getElementById('weeklyRecapChart').getContext('2d'), 'Weekly Recap', [12, 19, 3, 5, 2, 3, 7]);
-        createLineChart(document.getElementById('quickStatsChart').getContext('2d'), 'Quick Stats', [5, 10, 15, 20, 25, 30, 35]);
-        createPieChart(document.getElementById('printersCheckedChart').getContext('2d'), "Printers Checked", [10, 5]);
-        createPieChart(document.getElementById('roomsCheckedChart').getContext('2d'), "Rooms Checked", [8, 7]);
-    });
-</script>
+                if (!data || !data.labels || !data.datasets) {
+                    console.error("Invalid data format:", data);
+                    return;
+                }
+
+                const ctx = document.getElementById("weeklyRecapChart").getContext("2d");
+                new Chart(ctx, {
+                    type: "line",
+                    data: {
+                        labels: data.labels,
+                        datasets: data.datasets
+                    },
+                    options: {
+                        maintainAspectRatio: false,
+                        responsive: true,
+                        plugins: {
+                            legend: {
+                                display: true
+                            }
+                        },
+                        scales: {
+                            x: {
+                                title: {
+                                    display: true,
+                                    text: "Last 7 Days"
+                                }
+                            },
+                            y: {
+                                title: {
+                                    display: true,
+                                    text: "Total Created IDs"
+                                },
+                                beginAtZero: true
+                            }
+                        }
+                    }
+                });
+
+            } catch (error) {
+                console.error("Fetch error:", error);
+            }
+        }
+
+        fetchLineGraphData();
+
+
+        async function fetchChartData() {
+            try {
+                const response = await fetch('../INDEX-PHP/percentDone.php'); // Replace with actual PHP script path
+                const data = await response.json();
+
+                console.log("Fetched Data:", data); // Debugging output
+
+                if (!data || !data.labels || !data.values) {
+                    console.error("Invalid data format:", data);
+                    return;
+                }
+
+                // Render the chart
+                const ctx = document.getElementById("PrinterCheck").getContext("2d");
+                new Chart(ctx, {
+                    type: "pie",
+                    data: {
+                        labels: data.labels,
+                        datasets: [{
+                            data: data.values,
+                            backgroundColor: ["rgba(54, 162, 235, 0.6)", "rgba(255, 99, 132, 0.6)"],
+                            borderColor: "#fff",
+                            borderWidth: 2
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false
+                    }
+                });
+
+            } catch (error) {
+                console.error("Fetch error:", error);
+            }
+        }
+
+        fetchChartData();
+
+        async function fetchRoomData() {
+            try {
+                const response = await fetch('../INDEX-PHP/roomChart.php'); // Update with actual path
+                const data = await response.json();
+
+                console.log("Fetched Data:", data); // Debugging output
+
+                if (!data || !data.labels || !data.values) {
+                    console.error("Invalid data format:", data);
+                    return;
+                }
+
+                const ctx = document.getElementById("roomChart").getContext("2d");
+                new Chart(ctx, {
+                    type: "pie",
+                    data: {
+                        labels: data.labels,
+                        datasets: [{
+                            data: data.values,
+                            backgroundColor: ["rgba(75, 192, 192, 0.6)", "rgba(255, 159, 64, 0.6)"],
+                            borderColor: "#fff",
+                            borderWidth: 2
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false
+                    }
+                });
+
+            } catch (error) {
+                console.error("Fetch error:", error);
+            }
+        }
+
+        fetchRoomData();
+
+    </script>
+
+
 
     <!-- Footer -->
 

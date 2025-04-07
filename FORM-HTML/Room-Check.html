@@ -161,7 +161,7 @@
     checkbox.setAttribute("id", checkboxValues[i]);
     checkbox.setAttribute("name", checkboxValues[i]);
     checkbox.setAttribute("value", "No");  // Default value is No
-    checkbox.setAttribute("onchange", "this.value = this.checked ? 'Yes' : 'No'");  // Update value based on checked state
+    checkbox.setAttribute("onchange", "this.value = this.checked ? 'Working' : 'Broken'");  // Update value based on checked state
 
     checkboxContainer.appendChild(checkbox);
     checkboxContainer.appendChild(label);
@@ -332,7 +332,7 @@ async function submitForm(event) {
     <div id="room-number-container" style="display: none;">
       <label for="Room-Number">Room Number:</label>
       <input type="text" id="Room-Number" name="Room-Number" maxlength="255" required>
-      <label id="disclaimer" style="margin-bottom: 10px;" for="range">*Check box if broken*</label>
+      <label id="disclaimer" style="margin-bottom: 10px;" for="range">*Check box if working*</label>
     </div>
 
     <div id="additionalFields">

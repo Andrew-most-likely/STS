@@ -145,7 +145,7 @@ table th {
 
         <div class="search-container">
             <input type="text" id="searchInput" placeholder="Search for assets, tickets, or users...">
-            <button data-emoji="✨" type="submit" class="submit">   <i class="fa-solid fa-magnifying-glass"></i></button>
+            <button data-emoji="✨" type="submit" class="submit"><i class="fa-solid fa-magnifying-glass"></i></button>
         </div>
         <div class="profile" id="profile">
             <div class="profile-icon" id="profileIcon">U</div>

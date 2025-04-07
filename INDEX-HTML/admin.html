@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="en">
+
+
+<script>
+    // Check if the user is logged in (i.e., if 'userName' exists in sessionStorage)
+    if (sessionStorage.getItem('userName') === null || sessionStorage.getItem('userName') === undefined) {
+        // If user is undefined, redirect or show a message
+        window.location.href = '../login.html';  // Redirect to the login page or display a message
+    } else {
+        // Proceed with the application logic if user is defined
+        console.log('User is logged in:', sessionStorage.getItem('userName'));
+    }
+    // Check if the user is logged in
+    if (sessionStorage.getItem('isLoggedIn') !== 'true') {
+        window.location.href = '../index.html'; // Redirect to login page if not logged in
+    } 
+    if (sessionStorage.getItem('is_staff') === 'false' || sessionStorage.getItem('is_staff') === undefined) {
+        // If user is undefined, redirect or show a message
+        window.location.href = '../main.html';  // Redirect to the login page or display a message
+    }
+</script>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student ITFS</title>
+    <link rel="icon" type="image/x-icon" href="../ASSETS/favicon.ico">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="../Styles.css">
+
+</head>
+<style>
+    .box-container {
+        flex-direction: initial;
+        align-items: initial;
+        height: 100%;
+    }
+
+    /* Styles for larger screens - keep search bar visible */
+    @media (min-width: 769px) {
+        .phone-decorative-line {
+            display: none;
+            /* Ensure search bar is visible on larger screens */
+        }
+    }
+
+    /* Mobile-Specific Styles */
+    @media (max-width: 768px) {
+        .overlay {
+            position: fixed;
+            opacity: 70%;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #333;
+            z-index: 999;
+        }
+    }
+
+    body {
+        overflow-x: hidden;
+    }
+
+    .sidebar {
+        position: fixed;
+        top: 0;
+        height: 100%;
+        transition: left 0.3s ease;
+        z-index: 1000;
+        overflow-y: auto;
+    }
+
+    .sidebar.open {
+        left: 0;
+    }
+
+    .topnav {
+        left: 60px;
+        width: calc(100% - 60px);
+    }
+
+
+    .main-content {
+        margin-top: 60px;
+        width: calc(100% - 60px);
+    }
+
+    .box-left-column,
+    .box-right-column {
+        width: 100%;
+    }
+
+    /* Responsive chart and box adjustments */
+    .box,
+    .chart-container {
+        width: 100%;
+        max-width: 100%;
+    }
+
+    /* Ensure chart containers are responsive */
+    canvas {
+        max-width: 100%;
+        height: auto !important;
+    }
+    #requestFeedCarousel {
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+
+.carousel-card {
+  box-sizing: border-box;
+  padding: 15px;
+
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  opacity: 0;
+  transform: scale(0.97);
+  transition: all 0.5s ease;
+  position: absolute;
+  top: 0;
+  left: 0;
+  overflow-y: auto;
+}
+
+.carousel-card.show {
+  opacity: 1;
+  transform: scale(1);
+}
+
+
+  .difficulty-rating {
+    color: #f5b301;
+    font-size: 1.1rem;
+  }
+  .btn {
+    padding: 6px 14px;
+    margin-right: 10px;
+    border: none;
+    border-radius: 6px;
+    background-color: #007bff;
+    color: white;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background 0.2s;
+  }
+
+  .btn.deny-btn {
+    background-color: #dc3545;
+  }
+
+  .btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+
+</style>
+
+<body onload="fetchChildGroups(); loadTheme();">
+    <!-- Sidebar -->
+    <div class="sidebar" id="sidebar">
+        <div>
+            <div class="sidebar-header">
+                <button class="toggle-btn" id="toggleBtn">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <div class="sidebar-title">Student ITFS</div>
+            </div>
+
+            <div class="nav-items">
+                <button id="tab1" class="sidebar-button" onclick="location.href='../FORM-HTML/EQ-Drop.html'">
+                    <i class="fa-solid fa-rotate-left"></i>
+                    <span>Equipment Return</span>
+                </button>
+                <button id="tab2" class="sidebar-button" onclick="location.href='../FORM-HTML/Delivery-Intake.html'">
+                    <i class="fa-solid fa-boxes-stacked"></i>
+                    <span>Delivery Intake</span>
+                </button>
+                <button id="tab3" class="sidebar-button" onclick="location.href='../FORM-HTML/E-Waste.html'">
+                    <i class="fa-solid fa-recycle"></i>
+                    <span>E-waste</span>
+                </button>
+                <button id="tab4" class="sidebar-button" onclick="location.href='../FORM-HTML/Room-Check.html'">
+                    <i class="fa-solid fa-building"></i>
+                    <span>Room Check Form</span>
+                </button>
+                <button id="tab5" class="sidebar-button" onclick="location.href='../FORM-HTML/Field-Work.html'">
+                    <i class="fa-solid fa-screwdriver-wrench"></i>
+                    <span>Field Work</span>
+                </button>
+                <button id="tab6" class="sidebar-button" onclick="location.href='../PRINTER-CHECK/Printer-Check.php'">
+                    <i class="fa-solid fa-print"></i>
+                    <span>Printer Check</span>
+                </button>
+
+                <button id="tab7" class="sidebar-button" onclick="location.href='#'">
+                    <i class="fa-regular fa-chart-bar"></i>
+                    <span>Worker Stats</span>
+                </button>
+
+                <div class="decorative-line"></div>
+
+                <button id="tab8" class="sidebar-button" onclick="location.href='../LAB-STATS/Lab-Stats.html'">
+                    <i class="fa-solid fa-flask"></i>
+                    <span>Lab Stats</span>
+                </button>
+                <button id="tab9" class="sidebar-button" onclick="location.href='../../inventory/main.php'">
+                    <i class="fa-solid fa-warehouse"></i>
+                    <span>Inventory</span>
+                </button>
+                <button id="tab10" class="sidebar-button" onclick="location.href='../INDEX-HTML/Raw-Data.html'">
+                    <i class="fa-solid fa-file"></i>
+                    <span>Raw Data</span>
+                </button>
+            </div>
+        </div>
+
+        <div class="sidebar-copyright">
+            <img src="../ASSETS/logo-Black&White.png" class="sidebar-img" id="sidebarLogo" alt="Logo">
+            <p>JWU 2025 ©</p>
+        </div>
+    </div>
+
+    <!-- Overlay for mobile when sidebar is active -->
+    <div class="overlay" id="overlay"></div>
+
+    <!-- Top Navigation Bar -->
+    <div class="topnav">
+
+        <div class="search-container">
+            <input type="text" id="searchInput" placeholder="Search for assets, tickets, or users...">
+            <button data-emoji="✨" type="submit" class="submit"> <i class="fa-solid fa-magnifying-glass"></i></button>
+        </div>
+        <div class="profile" id="profile">
+            <div class="profile-icon" id="profileIcon">U</div>
+            <div class="dropdown" id="dropdown">
+                <div class="username">
+                    <h2 id="usernameDisplay"></h2>
+                </div>
+                <!-- Theme toggle switch -->
+                <div class="theme-toggle">
+                    <span>Dark Mode</span>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="themeToggle">
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+                <a href="#" class="dropdown-item">Schedule <i class="fa-solid fa-calendar-days" width="20"
+                        height="20"></i></a>
+                <a href="#" onclick="logout()" class="dropdown-item">Sign Out <i class="fa-solid fa-right-from-bracket"
+                        width="20" height="20"></i></a>
+            </div>
+        </div>
+    </div>
+
+<!-- Main Content Area -->
+<div class="main-content" id="mainContent">
+    <div class="box-container">
+        <div class="box-left-column">
+            <div class="box top-box">
+                <div class="box-header">
+                    <h2>Weekly Recap</h2>
+                    <i class="fas fa-sync-alt"></i>
+                </div>
+                <div class="box-content">
+                    <canvas id="weeklyRecapChart" width="200" height="250"></canvas>
+                </div>
+            </div>
+
+            <div class="box bottom-box">
+                <div class="box-header">
+                    <h2>Quick Stats</h2>
+                    <i class="fas fa-chart-bar"></i>
+                </div>
+                <div class="box-content" id="requestFeedCarousel">
+                    <!-- Cards will rotate here -->
+                  </div>                  
+            </div>
+        </div>
+
+        <div class="box-right-column">
+            <div class="box full-height-box">
+                <div class="box-header">
+                    <h2>Daily Tasks</h2>
+                    <i class="fas fa-user-chart"></i>
+                </div>
+                <div class="box-row">
+                    <div class="box-section">
+                        <div class="section-header">Printer's Checked Today</div>
+                        <div class="section-content">
+                            <canvas id="PrinterCheck" width="200" height="200"></canvas>
+                        </div>
+                    </div>
+                    <div class="box-section">
+                        <div class="section-header">Rooms Checked Today</div>
+                        <div class="section-content">
+                            <canvas id="roomChart" width="200" height="200"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Include Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+
+
+
+    function createPieChart(ctx, label, data) {
+        new Chart(ctx, {
+            type: 'pie',
+            data: {
+                labels: ['Checked', 'Not Checked'],
+                datasets: [{
+                    label: label,
+                    data: data,
+                    backgroundColor: ['rgba(54, 162, 235, 0.5)', 'rgba(255, 99, 132, 0.5)'],
+                    borderColor: ['rgba(54, 162, 235, 1)', 'rgba(255, 99, 132, 1)'],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false
+            }
+        });
+    }
+    
+    async function fetchLineGraphData() {
+    try {
+        const response = await fetch('../INDEX-PHP/TicketGraph.php'); // Update the path to your PHP script
+        const data = await response.json();
+
+        if (!data || !data.labels || !data.datasets) {
+            console.error("Invalid data format:", data);
+            return;
+        }
+
+        const ctx = document.getElementById("weeklyRecapChart").getContext("2d");
+        new Chart(ctx, {
+            type: "line",
+            data: {
+                labels: data.labels,
+                datasets: data.datasets
+            },
+            options: {
+                maintainAspectRatio: false,
+                responsive: true,
+                plugins: {
+                    legend: {
+                        display: true
+                    }
+                },
+                scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: "Last 7 Days"
+                        }
+                    },
+                    y: {
+                        title: {
+                            display: true,
+                            text: "Total Created IDs"
+                        },
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+
+    } catch (error) {
+        console.error("Fetch error:", error);
+    }
+}
+
+fetchLineGraphData();
+
+
+    async function fetchChartData() {
+    try {
+        const response = await fetch('../INDEX-PHP/percentDone.php'); // Replace with actual PHP script path
+        const data = await response.json();
+        
+        console.log("Fetched Data:", data); // Debugging output
+        
+        if (!data || !data.labels || !data.values) {
+            console.error("Invalid data format:", data);
+            return;
+        }
+
+        // Render the chart
+        const ctx = document.getElementById("PrinterCheck").getContext("2d");
+        new Chart(ctx, {
+            type: "pie",
+            data: {
+                labels: data.labels,
+                datasets: [{
+                    data: data.values,
+                    backgroundColor: ["rgba(54, 162, 235, 0.6)", "rgba(255, 99, 132, 0.6)"],
+                    borderColor: "#fff",
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false
+            }
+        });
+
+    } catch (error) {
+        console.error("Fetch error:", error);
+    }
+}
+
+fetchChartData();
+
+async function fetchRoomData() {
+    try {
+        const response = await fetch('../INDEX-PHP/roomChart.php'); // Update with actual path
+        const data = await response.json();
+
+        console.log("Fetched Data:", data); // Debugging output
+
+        if (!data || !data.labels || !data.values) {
+            console.error("Invalid data format:", data);
+            return;
+        }
+
+        const ctx = document.getElementById("roomChart").getContext("2d");
+        new Chart(ctx, {
+            type: "pie",
+            data: {
+                labels: data.labels,
+                datasets: [{
+                    data: data.values,
+                    backgroundColor: ["rgba(75, 192, 192, 0.6)", "rgba(255, 159, 64, 0.6)"],
+                    borderColor: "#fff",
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false
+            }
+        });
+
+    } catch (error) {
+        console.error("Fetch error:", error);
+    }
+}
+
+fetchRoomData();
+
+</script>
+
+
+
+    <!-- Footer -->
+
+    <script src="../INDEX-JS/Wrapper.js"></script>
+    <script src="../INDEX-JS/testindexsearch.js"></script>
+    <script src='https://cdn.jsdelivr.net/npm/js-confetti@latest/dist/js-confetti.browser.js'></script>
+    <script>
+        const feedContainer = document.getElementById('requestFeedCarousel');
+        let currentIndex = 0;
+        let requests = [];
+      
+        function createCardHTML(request) {
+          return `
+            <div class="carousel-card show" id="card-${request.id}">
+              <h3>Ticket: ${request.ticket}</h3>
+              <p><strong>Submitted by:</strong> ${request.name}</p>
+              <p><strong>Work Description:</strong> ${request.description}</p>
+              <p><strong>Difficulty:</strong> <span class="difficulty-rating">${'★'.repeat(request.difficulty)}</span></p>
+              <p><strong>Time:</strong> ${request.time}</p>
+              <div class="action-buttons" style="margin-top: 10px;">
+                <button class="btn approve-btn" onclick="updateStatus(${request.id}, 'approved')">Approve</button>
+                <button class="btn deny-btn" onclick="updateStatus(${request.id}, 'denied')">Deny</button>
+              </div>
+            </div>
+          `;
+        }
+      
+        function showCurrentCard() {
+          if (requests.length === 0 || currentIndex >= requests.length) {
+            feedContainer.innerHTML = '<div class="carousel-card show">No pending requests</div>';
+            return;
+          }
+          feedContainer.innerHTML = createCardHTML(requests[currentIndex]);
+        }
+      
+        function updateStatus(id, status) {
+          const card = document.getElementById(`card-${id}`);
+          const approveBtn = card.querySelector('.approve-btn');
+          const denyBtn = card.querySelector('.deny-btn');
+      
+          // Disable buttons
+          approveBtn.disabled = true;
+          denyBtn.disabled = true;
+      
+          fetch('../INDEX-PHP/update_status.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: `id=${id}&status=${status}`
+          })
+          .then(res => res.json())
+          .then(data => {
+            if (data.success) {
+              card.classList.remove('show');
+              setTimeout(() => {
+                currentIndex++;
+                showCurrentCard();
+              }, 600); // Match transition duration
+            } else {
+              alert('Failed to update status');
+              approveBtn.disabled = false;
+              denyBtn.disabled = false;
+            }
+          })
+          .catch(() => {
+            alert('Request failed');
+            approveBtn.disabled = false;
+            denyBtn.disabled = false;
+          });
+        }
+      
+        fetch('../INDEX-PHP/admin.php')
+          .then(res => res.json())
+          .then(data => {
+            requests = data;
+            showCurrentCard();
+          });
+      </script>
+      
+    <script>
+        // Modify existing sidebar toggle functionality for mobile
+        document.addEventListener('DOMContentLoaded', function () {
+            const sidebar = document.getElementById('sidebar');
+            const toggleBtn = document.getElementById('toggleBtn');
+
+            const overlay = document.getElementById('overlay');
+
+            // Function to remove the overlay when it's clicked/tapped
+            overlay.addEventListener('click', function () {
+                overlay.style.display = 'none';
+            });
+
+
+            toggleBtn.addEventListener('click', function () {
+                sidebar.classList.toggle('open');
+                overlay.classList.toggle('active');
+            });
+
+            overlay.addEventListener('click', function () {
+                sidebar.classList.remove('open');
+                overlay.classList.remove('active');
+                overlay.style.display = 'none';
+            });
+
+            // Ensure responsive behavior on resize
+            window.addEventListener('resize', function () {
+                if (window.innerWidth > 768) {
+                    sidebar.classList.remove('open');
+                    overlay.classList.remove('active');
+                }
+            });
+        });
+
+
+        // Initialize jsConfetti
+        const jsConfetti = new JSConfetti();
+
+        // Add click event listeners to all buttons
+        document.querySelectorAll('.submit').forEach(button => {
+            button.addEventListener('click', () => {
+                // Retrieve the emoji from the data-emoji attribute of the clicked button
+                const emoji = button.getAttribute('data-emoji');
+                // Trigger the confetti with the specific emoji
+                jsConfetti.addConfetti({
+                    emojis: [emoji], // Use the emoji as confetti
+                    emojiSize: 70,
+                    confettiNumber: 40, // Number of confetti particles
+                });
+            });
+        });
+    </script>
+</body>
+
+</html>

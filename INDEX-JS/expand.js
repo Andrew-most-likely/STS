@@ -97,22 +97,11 @@ function filterTable(searchText, tbody, cachedData) {
 function renderRows(data, columns) {
     return data.map(row => `
         <tr>
-            ${columns.map(column => {
-                if (column === 'Podium' || column === 'Tablet' || column === 'Projector') {
-                    const value = row[column];
-                    const isWorking = value === 'No';
-                    return `
-                        <td>
-                            <span class="${isWorking ? 'status-working' : 'status-broken'}">
-                                ${isWorking ? 'Working' : 'Broken'}
-                            </span>
-                        </td>`;
-                }
-                return `<td>${row[column] || ''}</td>`;
-            }).join('')}
+            ${columns.map(column => `<td>${row[column] || ''}</td>`).join('')}
         </tr>
     `).join('');
 }
+
 
 async function fetchViewData(viewId) {
     const content = document.getElementById(`content-${viewId}`);
