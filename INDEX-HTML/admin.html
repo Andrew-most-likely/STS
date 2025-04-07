@@ -464,7 +464,6 @@ fetchRoomData();
     <!-- Footer -->
 
     <script src="../INDEX-JS/Wrapper.js"></script>
-    <script src="../INDEX-JS/testindexsearch.js"></script>
     <script src='https://cdn.jsdelivr.net/npm/js-confetti@latest/dist/js-confetti.browser.js'></script>
     <script>
         const feedContainer = document.getElementById('requestFeedCarousel');
@@ -538,58 +537,7 @@ fetchRoomData();
           });
       </script>
       
-    <script>
-        // Modify existing sidebar toggle functionality for mobile
-        document.addEventListener('DOMContentLoaded', function () {
-            const sidebar = document.getElementById('sidebar');
-            const toggleBtn = document.getElementById('toggleBtn');
 
-            const overlay = document.getElementById('overlay');
-
-            // Function to remove the overlay when it's clicked/tapped
-            overlay.addEventListener('click', function () {
-                overlay.style.display = 'none';
-            });
-
-
-            toggleBtn.addEventListener('click', function () {
-                sidebar.classList.toggle('open');
-                overlay.classList.toggle('active');
-            });
-
-            overlay.addEventListener('click', function () {
-                sidebar.classList.remove('open');
-                overlay.classList.remove('active');
-                overlay.style.display = 'none';
-            });
-
-            // Ensure responsive behavior on resize
-            window.addEventListener('resize', function () {
-                if (window.innerWidth > 768) {
-                    sidebar.classList.remove('open');
-                    overlay.classList.remove('active');
-                }
-            });
-        });
-
-
-        // Initialize jsConfetti
-        const jsConfetti = new JSConfetti();
-
-        // Add click event listeners to all buttons
-        document.querySelectorAll('.submit').forEach(button => {
-            button.addEventListener('click', () => {
-                // Retrieve the emoji from the data-emoji attribute of the clicked button
-                const emoji = button.getAttribute('data-emoji');
-                // Trigger the confetti with the specific emoji
-                jsConfetti.addConfetti({
-                    emojis: [emoji], // Use the emoji as confetti
-                    emojiSize: 70,
-                    confettiNumber: 40, // Number of confetti particles
-                });
-            });
-        });
-    </script>
 </body>
 
 </html>
