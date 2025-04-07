@@ -107,8 +107,6 @@
 }
 
 .carousel-card {
-  width: 100%;
-  height: 100%;
   box-sizing: border-box;
   padding: 15px;
   background: #f9f9f9;
@@ -272,9 +270,9 @@
                     <h2>Quick Stats</h2>
                     <i class="fas fa-chart-bar"></i>
                 </div>
-                <div class="box-content" id="requestFeedCarousel">
+                <div class="box-content" id="requestFeedCarousel" style="display: flex; gap: 1rem; flex-wrap: wrap;">
                     <!-- Cards will rotate here -->
-                  </div>                  
+                  </div>
             </div>
         </div>
 
@@ -466,12 +464,12 @@ fetchRoomData();
     <script src='https://cdn.jsdelivr.net/npm/js-confetti@latest/dist/js-confetti.browser.js'></script>
     <script>
         const feedContainer = document.getElementById('requestFeedCarousel');
-        let currentIndex = 0;
         let requests = [];
+        let currentIndex = 0;
       
         function createCardHTML(request) {
           return `
-            <div class="carousel-card show" id="card-${request.id}">
+            <div class="carousel-card show" id="card-${request.id}" style="flex: 1 1 calc(50% - 0.5rem); max-width: calc(50% - 0.5rem); transition: opacity 0.5s ease;">
               <h3>Ticket: ${request.ticket}</h3>
               <p><strong>Submitted by:</strong> ${request.name}</p>
               <p><strong>Work Description:</strong> ${request.description}</p>
@@ -485,12 +483,18 @@ fetchRoomData();
           `;
         }
       
-        function showCurrentCard() {
-          if (requests.length === 0 || currentIndex >= requests.length) {
+        function renderNextCards() {
+          feedContainer.innerHTML = '';
+      
+          const cardsToShow = requests.slice(currentIndex, currentIndex + 2);
+          if (cardsToShow.length === 0) {
             feedContainer.innerHTML = '<div class="carousel-card show">No pending requests</div>';
             return;
           }
-          feedContainer.innerHTML = createCardHTML(requests[currentIndex]);
+      
+          for (let request of cardsToShow) {
+            feedContainer.innerHTML += createCardHTML(request);
+          }
         }
       
         function updateStatus(id, status) {
@@ -498,7 +502,6 @@ fetchRoomData();
           const approveBtn = card.querySelector('.approve-btn');
           const denyBtn = card.querySelector('.deny-btn');
       
-          // Disable buttons
           approveBtn.disabled = true;
           denyBtn.disabled = true;
       
@@ -510,13 +513,19 @@ fetchRoomData();
           .then(res => res.json())
           .then(data => {
             if (data.success) {
-              card.classList.remove('show');
+              // Fade out the card
+              card.style.opacity = '0';
+      
+              // Delay before removing and replacing
               setTimeout(() => {
-                currentIndex++;
-                showCurrentCard();
-              }, 600); // Match transition duration
+                // Remove it from DOM and from the queue
+                requests = requests.filter(r => r.id !== id);
+      
+                // If fewer than 2 shown, try adding one more to maintain 2
+                renderNextCards();
+              }, 500);
             } else {
-              alert('Failed to update status');
+              alert('Update failed');
               approveBtn.disabled = false;
               denyBtn.disabled = false;
             }
@@ -528,13 +537,15 @@ fetchRoomData();
           });
         }
       
+        // Fetch pending requests
         fetch('../INDEX-PHP/admin.php')
           .then(res => res.json())
           .then(data => {
             requests = data;
-            showCurrentCard();
+            renderNextCards();
           });
       </script>
+      
       
     <script>
         // Modify existing sidebar toggle functionality for mobile
