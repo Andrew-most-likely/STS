@@ -16,8 +16,8 @@
         window.location.href = '../index.html'; // Redirect to login page if not logged in
     } 
     if (sessionStorage.getItem('is_staff') === true) {
-        // If user is undefined, redirect or show a message
-        window.location.href = '../main.html';  // Redirect to the login page or display a message
+        // If user is staff, redirect to staff page
+        window.location.href = '../admin.html';  // Redirect to the staff page 
     }
 </script>
 
