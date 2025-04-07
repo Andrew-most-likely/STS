@@ -517,7 +517,7 @@ fetchRoomData();
           });
         }
       
-        fetch('get_pending_requests.php')
+        fetch('../INDEX-PHP/admin.php')
           .then(res => res.json())
           .then(data => {
             requests = data;
