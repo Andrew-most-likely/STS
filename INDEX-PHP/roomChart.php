@@ -12,12 +12,12 @@ try {
     // Get today's date
     $today = date('Y-m-d');
 
-    // Query to count rooms checked today
-    $stmt = $conn->prepare("SELECT COUNT(*) AS checked_rooms FROM total_room_check WHERE `Date Checked` = :today");
-    $stmt->bindParam(':today', $today);
+    // Query to count rooms checked in the last 7 days
+    $stmt = $conn->prepare("SELECT COUNT(*) AS checked_rooms FROM total_room_check WHERE `Date Checked` >= CURDATE() - INTERVAL 7 DAY");
     $stmt->execute();
     $result = $stmt->fetch(PDO::FETCH_ASSOC);
     $checkedRooms = $result['checked_rooms'];
+
 
     // Expected number of room checks per day
     $expectedRooms = 280;
