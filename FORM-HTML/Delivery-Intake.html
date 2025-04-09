@@ -187,10 +187,10 @@ function toggleFieldVisibility(...fieldIds) {
     <input type="date" id="Date-Received" name="date-received" required>
 
     <label for="Tracking-Number">Tracking Number:</label>
-    <input type="text" id="Tracking-Number" name="tracking-number" required>
+    <input placeholder="aa11 bb22 cc33 dd44 ee55" type="text" id="Tracking-Number" name="tracking-number" required>
 
     <label for="delivery_company">Delivery Company:</label>
-    <input type="text" id="delivery_company" name="delivery_company" required>
+    <input placeholder="FedEx, Amazon, etc..." type="text" id="delivery_company" name="delivery_company" required>
 
     <label for="Type-of-Delivery">Type of Delivery:</label>
     <select id="Type-of-Delivery" name="type-of-delivery" required onchange="showAdditionalFields()">
@@ -204,13 +204,13 @@ function toggleFieldVisibility(...fieldIds) {
     <div id="additionalFields">
       <!-- Fields will be shown dynamically based on delivery type -->
       <label id="Number-of-Units-Title" for="Number-of-Units" class="hidden">Number of Units:</label>
-      <input type="text" id="Number-of-Units" name="number-of-units" class="hidden" maxlength="255">
+      <input placeholder="Items on pallet..." type="text" id="Number-of-Units" name="number-of-units" class="hidden" maxlength="255">
 
       <label id="Contents-Title" for="Contents" class="hidden">Contents:</label>
-      <input type="text" id="Contents" name="contents" class="hidden" maxlength="255">
+      <input placeholder="Item description" type="text" id="Contents" name="contents" class="hidden" maxlength="255">
 
       <label id="Addressed-To-Title" for="Addressed-To" class="hidden">Addressed To:</label>
-      <input type="text" id="Addressed-To" name="addressed-to" class="hidden" maxlength="255">
+      <input placeholder="John Doe..." type="text" id="Addressed-To" name="addressed-to" class="hidden" maxlength="255">
 
       <label id="Person-Contacted-Title" for="Person-Contacted" class="hidden">Person Contacted:</label>
       <select id="Person-Contacted" name="person-contacted" class="hidden" required>
@@ -238,7 +238,7 @@ function toggleFieldVisibility(...fieldIds) {
 
   <!-- Toner Fields -->
   <label id="Toner-ID-Title" for="Toner-ID" class="hidden">Toner ID:</label>
-  <input type="text" id="Toner-ID" name="toner-id" class="hidden" maxlength="255">
+  <input placeholder="HP 305A, CRG-728, etc..." type="text" id="Toner-ID" name="toner-id" class="hidden" maxlength="255">
 
   <label id="color-Title" for="color" class="hidden">Color Type:</label>
   <select id="color" name="color" class="hidden" required>
@@ -251,12 +251,12 @@ function toggleFieldVisibility(...fieldIds) {
   </select>
 
   <label id="Designated-Printer-Title" for="Designated-Printer" class="hidden">Printer Model:</label>
-  <input type="text" id="Designated-Printer" name="designated-printer" class="hidden" maxlength="255">
+  <input placeholder="M428fdw, MF644Cdw, etc..." type="text" id="Designated-Printer" name="designated-printer" class="hidden" maxlength="255">
 </div>
 
 
       <label id="Item-Description-Title" for="Item-Description" class="hidden">Item Description:</label>
-      <input type="text" id="Item-Description" name="item-description" class="hidden" maxlength="255">
+      <input placeholder="Item description" type="text" id="Item-Description" name="item-description" class="hidden" maxlength="255">
 
       <label id="Arrangements-Made-Title" for="Arrangements-Made" class="hidden">Arrangements Made:</label>
       <input type="text" id="Arrangements-Made" name="arrangements-made" class="hidden" maxlength="255">
