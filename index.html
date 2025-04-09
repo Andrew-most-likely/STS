@@ -1,11 +1,82 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login & Register</title>
     <link rel="icon" type="image/x-icon" href="ASSETS/favicon.ico">
     <style>
+
+/* Mobile (phone) styles */
+@media (max-width: 480px) {
+    .modal-content {
+        width: 90%;
+        max-width: 350px;
+        padding: 20px;
+        margin: 10% auto;
+    }
+
+    .modal-header h2 {
+        font-size: 18px;
+    }
+
+    .agreement-text {
+        font-size: 12px;
+        max-height: 60vh;
+    }
+
+    .modal-buttons h6 {
+        font-size: 12px;
+    }
+
+    .modal-button {
+        padding: 8px 16px;
+        font-size: 14px;
+    }
+}
+
+/* Tablet styles */
+@media (min-width: 481px) and (max-width: 768px) {
+    .modal-content {
+        width: 80%;
+        max-width: 500px;
+        padding: 25px;
+        margin: 15% auto;
+    }
+
+    .modal-header h2 {
+        font-size: 20px;
+    }
+
+    .agreement-text {
+        font-size: 13px;
+        max-height: 70vh;
+    }
+
+    .modal-buttons h6 {
+        font-size: 14px;
+    }
+
+    .modal-button {
+        padding: 10px 18px;
+        font-size: 15px;
+    }
+}
+
+/* Default for larger screens */
+.modal-content {
+    width: 90%;
+    max-width: 600px;
+    margin: 15% auto;
+    padding: 30px;
+}
+
+.modal-header h2 {
+    font-size: 24px;
+}
+
+
         /* Reset default styles */
         * {
             margin: 0;
@@ -15,6 +86,10 @@
 
         /* Body styles */
         body {
+            background: url(ASSETS/2016003_0833.jpg);
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-position: center;
             font-family: Arial, sans-serif;
             background-color: #f4f4f4;
             display: flex;
@@ -27,12 +102,13 @@
 
         /* Container styles */
         .container {
-            background-color: white;
+            background-color: rgb(0, 62, 120, 0.8);
             padding: 30px;
             border-radius: 8px;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
             width: 100%;
             max-width: 400px;
+            
         }
 
         /* Header styles */
@@ -42,15 +118,15 @@
         }
 
         .header h2 {
-            color: #333333;
+            color: whitesmoke;
             font-size: 24px;
             margin-bottom: 10px;
         }
 
         .decorative-line {
             width: 100%;
-            height: 2px;
-            background-color: #007bff;
+            height: 1px;
+            background-color: #dddddd;
             margin: 20px 0;
         }
 
@@ -62,7 +138,7 @@
         label {
             display: block;
             margin-bottom: 8px;
-            color: #333333;
+            color: whitesmoke;
             font-weight: bold;
         }
 
@@ -108,7 +184,7 @@
         }
 
         .switch-form span {
-            color: #666666;
+            color: whitesmoke;
         }
 
         .switch-form a {
@@ -125,7 +201,7 @@
         /* Helper text styles */
         .helper-text {
             font-size: 12px;
-            color: #666666;
+            color: whitesmoke;
             margin-top: 4px;
         }
 
@@ -218,57 +294,59 @@
             display: none;
         }
 
-         /* Additional styles for the agreement text */
-    .agreement-text {
-        max-height: 70vh; /* Larger height for license */
-        padding: 25px;
-        font-size: 14px;
-        line-height: 1.6;
-        color: #333333;
-    }
+        /* Additional styles for the agreement text */
+        .agreement-text {
+            max-height: 70vh;
+            /* Larger height for license */
+            padding: 25px;
+            font-size: 14px;
+            line-height: 1.6;
+            color: #333333;
+        }
 
-    .agreement-text h3 {
-        color: #007bff;
-        margin: 20px 0 10px 0;
-        font-size: 16px;
-    }
+        .agreement-text h3 {
+            color: #007bff;
+            margin: 20px 0 10px 0;
+            font-size: 16px;
+        }
 
-    .agreement-text p {
-        margin-bottom: 15px;
-    }
+        .agreement-text p {
+            margin-bottom: 15px;
+        }
 
-    .agreement-text strong {
-        display: block;
-        margin-bottom: 20px;
-        font-size: 15px;
-    }
+        .agreement-text strong {
+            display: block;
+            margin-bottom: 20px;
+            font-size: 15px;
+        }
 
-    .agreement-text ul {
-        margin: 10px 0;
-        padding-left: 20px;
-    }
+        .agreement-text ul {
+            margin: 10px 0;
+            padding-left: 20px;
+        }
 
-    .agreement-text li {
-        margin-bottom: 10px;
-    }
+        .agreement-text li {
+            margin-bottom: 10px;
+        }
 
-    /* Make modal larger for license */
-    .modal-content {
-        max-width: 800px;
-        margin: 5% auto;
-        max-height: 90vh;
-        overflow-y: auto;
-    }
+        /* Make modal larger for license */
+        .modal-content {
+            max-width: 800px;
+            margin: 5% auto;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
 
-    /* Make header more prominent */
-    .modal-header h2 {
-        color: #007bff;
-        font-size: 24px;
-        margin-bottom: 15px;
-    }
+        /* Make header more prominent */
+        .modal-header h2 {
+            color: #007bff;
+            font-size: 24px;
+            margin-bottom: 15px;
+        }
     </style>
 </head>
-<body>
+
+<body onload="showAgreementModal(agreementModal)">
     <!-- Main container -->
     <div class="container">
         <!-- Header section -->
@@ -322,36 +400,62 @@
             </div>
             <div class="agreement-text">
                 <p><strong>Copyright (c) 2025 Johnson & Wales University (JWU) IT Field Services. All Rights Reserved.</strong></p>
-                
+            
                 <h3>1. License Grant</h3>
-                <p>This software is proprietary to Johnson & Wales University (JWU) IT Field Services ("Licensor"). By using this software, you (the "Licensee") are granted a limited, non-exclusive, non-transferable, and revocable license to use the software only if you are a current employee or authorized member of the IT Field Services department or the broader Johnson & Wales University (JWU) organization.</p>
-
-                <h3>2. Restrictions</h3>
+                <p>This software is proprietary to Johnson & Wales University (JWU) IT Field Services ("Licensor"). By accessing or using this software ("Platform"), you (the "Licensee") are granted a limited, non-exclusive, non-transferable, and revocable license to use the software solely for the purposes specified by JWU and only if you are a current employee or an authorized member of the IT Field Services department or the broader Johnson & Wales University (JWU) organization. This license is effective from the moment you access the Platform.</p>
+                <p>The license granted is strictly for internal, non-commercial use within the scope of Johnson & Wales University's operations.</p>
+            
+                <h3>2. Authorized Users</h3>
+                <p>Only current employees, contractors, or affiliates of JWU who have been explicitly authorized by the Licensor are permitted to use the software. "Authorized members" refers to individuals who have been granted explicit access through JWU's internal systems, and access will be subject to periodic verification.</p>
+            
+                <h3>3. Restrictions</h3>
                 <ul>
-                    <li>You may not distribute, sublicense, sell, or share this software or any derivative works without explicit written permission from the Licensor.</li>
-                    <li>You may not reverse engineer, decompile, or disassemble the software, except as permitted by applicable law.</li>
-                    <li>This software may only be used within the scope of Johnson & Wales University's authorized operations and by members of the IT Field Services department or the greater JWU community.</li>
+                    <li>You may not distribute, sublicense, sell, or share this software or any derivative works, in whole or in part, without the explicit written consent of the Licensor.</li>
+                    <li>You may not reverse engineer, decompile, disassemble, or otherwise attempt to derive the source code of the software, except as permitted by applicable law.</li>
+                    <li>You may not use the software for any purposes outside of the scope of your work for JWU or beyond the internal operations of the organization.</li>
+                    <li>You may not modify, adapt, or create derivative works of the software, except as authorized by the Licensor in writing.</li>
+                    <li>You may not use the software in any unlawful or unethical manner that violates the rights of any third parties.</li>
                 </ul>
-
-                <h3>3. Ownership</h3>
-                <p>All rights, title, and interest in and to the software, including but not limited to any modifications, updates, or improvements, are owned solely by Johnson & Wales University (JWU) IT Field Services. This license does not grant you any ownership rights to the software or any intellectual property associated with it.</p>
-
-                <h3>4. Termination</h3>
-                <p>This license is effective until terminated. The license will terminate automatically without notice if you fail to comply with any provision of this agreement. Upon termination, you must immediately cease all use of the software and destroy any copies in your possession.</p>
-
-                <h3>5. Disclaimer of Warranty</h3>
-                <p>This software is provided "as-is," and the Licensor makes no warranties or representations, express or implied, regarding the software's functionality, accuracy, or reliability. The Licensor shall not be liable for any damages resulting from the use or inability to use the software.</p>
-
-                <h3>6. Governing Law</h3>
-                <p>This agreement shall be governed by and construed in accordance with the laws of the state of Rhode Island, without regard to its conflict of law principles.</p>
+            
+                <h3>4. Ownership and Intellectual Property</h3>
+                <p>All rights, title, and interest in and to the software, including but not limited to any modifications, updates, improvements, documentation, and related intellectual property, are owned solely by Johnson & Wales University (JWU) IT Field Services. The license granted to you does not convey any ownership rights to the software or intellectual property associated with it.</p>
+            
+                <h3>5. License Term and Termination</h3>
+                <p>This license is effective upon acceptance and will remain in effect until terminated. The Licensor may terminate this license immediately upon breach of any provision of this agreement. Additionally, the Licensee may terminate the license by ceasing use of the software and destroying all copies. Upon termination, the Licensee must cease all use of the software and return or destroy any copies in their possession.</p>
+                <p>The Licensee may request the termination of their license, but this must be done in writing and is subject to Licensor's approval.</p>
+            
+                <h3>6. Disclaimer of Warranty</h3>
+                <p>The software is provided "as-is" without warranty of any kind, either express or implied, including but not limited to warranties of merchantability, fitness for a particular purpose, or non-infringement. The Licensor does not guarantee the software's functionality, accuracy, completeness, or reliability. The Licensor shall not be liable for any damages arising from the use or inability to use the software, including but not limited to any data loss, interruption of service, or other direct, indirect, or consequential damages.</p>
+            
+                <h3>7. Indemnification</h3>
+                <p>You agree to indemnify, defend, and hold harmless the Licensor and its affiliates, employees, and agents from any claims, damages, liabilities, or expenses (including reasonable attorneys' fees) arising out of your use or misuse of the software, your violation of this agreement, or your violation of any law or the rights of any third party.</p>
+            
+                <h3>8. Audit and Monitoring Rights</h3>
+                <p>The Licensor reserves the right to audit the use of the software at any time to ensure compliance with this agreement. You agree to cooperate with such audits and provide access to any relevant records or systems necessary to verify compliance. Unauthorized use may result in termination of this agreement.</p>
+            
+                <h3>9. Governing Law and Dispute Resolution</h3>
+                <p>This agreement shall be governed by and construed in accordance with the laws of the state of Rhode Island, without regard to its conflict of law principles. Any disputes arising from or related to this agreement shall be resolved through binding arbitration under the rules of the American Arbitration Association (AAA). Arbitration shall take place in Providence, Rhode Island, and the decision of the arbitrator shall be final and binding.</p>
+            
+                <h3>10. Force Majeure</h3>
+                <p>Neither party shall be held liable for any failure to perform or delay in performance under this agreement due to causes beyond its reasonable control, including, but not limited to, natural disasters, acts of war, terrorism, government actions, labor strikes, or other unforeseen events.</p>
+            
+                <h3>11. Severability</h3>
+                <p>If any provision of this agreement is determined to be invalid, illegal, or unenforceable, the remaining provisions shall remain in full force and effect, and the invalid provision shall be amended to reflect the intent of the parties as closely as possible.</p>
+            
+                <h3>12. No Assignment</h3>
+                <p>You may not assign or transfer this agreement or your rights hereunder to any third party without the prior written consent of the Licensor. Any attempt to assign or transfer this agreement without such consent will be void.</p>
+            
+                <p>By clicking "Accept" or accessing the Platform, you acknowledge that you have read, understood, and agreed to the terms of this agreement. If you do not agree to the terms, you may not access or use the software.</p>
             </div>
+
             <div class="modal-buttons">
+
                 <button class="modal-button decline-button" onclick="declineAgreement()">Decline</button>
                 <button class="modal-button accept-button" onclick="acceptAgreement()">Accept</button>
             </div>
         </div>
     </div>
-    
+
     <!-- Notification element -->
     <div id="notification" class="notification"></div>
 
@@ -373,16 +477,16 @@
         function showNotification(message) {
             notification.textContent = message;
             notification.style.display = 'block';
-            
+
             setTimeout(() => {
                 notification.style.display = 'none';
             }, 3000);
         }
 
         // Function to toggle between login and register forms
-        toggleLink.addEventListener('click', function(event) {
+        toggleLink.addEventListener('click', function (event) {
             event.preventDefault();
-            
+
             if (loginForm.style.display === 'none') {
                 loginForm.style.display = 'block';
                 registerForm.style.display = 'none';
@@ -406,33 +510,15 @@
 
         // Function to accept agreement
         function acceptAgreement() {
-            fetch('INDEX-PHP/update_agreement.php', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    user_id: tempUserData.user_id
-                })
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    agreementModal.style.display = 'none';
-                    completeLogin(tempUserData);
-                } else {
-                    showNotification(data.message || 'Failed to update agreement status');
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                showNotification('An error occurred. Please try again.');
-            });
-        }
 
+            if (acceptAgreement = true) {
+                agreementModal.style.display = 'none';
+            } else {
+                showNotification('Failed to update agreement status');
+            }
+        }
         // Function to decline agreement
         function declineAgreement() {
-            agreementModal.style.display = 'none';
             showNotification('You must accept the agreement to continue');
         }
 
@@ -446,62 +532,63 @@
         }
 
         // Handle login form submission
-        loginForm.addEventListener('submit', function(event) {
+        loginForm.addEventListener('submit', function (event) {
             event.preventDefault();
-            
+
             const formData = new FormData(loginForm);
 
             fetch('INDEX-PHP/login.php', {
                 method: 'POST',
                 body: formData
             })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    if (data.needs_agreement) {
-                        showAgreementModal(data);
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        if (data.needs_agreement) {
+                            showAgreementModal(data);
+                        } else {
+                            completeLogin(data);
+                        }
                     } else {
-                        completeLogin(data);
+                        showNotification(data.message);
                     }
-                } else {
-                    showNotification(data.message);
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                showNotification('An error occurred. Please try again.');
-            });
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    showNotification('An error occurred. Please try again.');
+                });
         });
 
         // Handle registration form submission
-        registerForm.addEventListener('submit', function(event) {
+        registerForm.addEventListener('submit', function (event) {
             event.preventDefault();
-            
+
             const formData = new FormData(registerForm);
 
             fetch('INDEX-PHP/register.php', {
                 method: 'POST',
                 body: formData
             })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    showNotification('Registration successful! Please login.');
-                    // Switch back to login form
-                    loginForm.style.display = 'block';
-                    registerForm.style.display = 'none';
-                    formHeader.textContent = 'Login';
-                    toggleText.textContent = 'Haven\'t registered?';
-                    toggleLink.textContent = 'Register';
-                } else {
-                    showNotification(data.message);
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                showNotification('An error occurred. Please try again.');
-            });
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        showNotification('Registration successful! Please login.');
+                        // Switch back to login form
+                        loginForm.style.display = 'block';
+                        registerForm.style.display = 'none';
+                        formHeader.textContent = 'Login';
+                        toggleText.textContent = 'Haven\'t registered?';
+                        toggleLink.textContent = 'Register';
+                    } else {
+                        showNotification(data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    showNotification('An error occurred. Please try again.');
+                });
         });
     </script>
 </body>
+
 </html>
