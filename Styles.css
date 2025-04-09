@@ -443,7 +443,6 @@ input:checked+.toggle-slider:before {
 .top-box,
 .bottom-box {
     min-height: 200px;
-    max-height: 450px;
 }
 
 .full-height-box {
