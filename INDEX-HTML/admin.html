@@ -2,25 +2,6 @@
 <html lang="en">
 
 
-<script>
-    // Check if the user is logged in (i.e., if 'userName' exists in sessionStorage)
-    if (sessionStorage.getItem('userName') === null || sessionStorage.getItem('userName') === undefined) {
-        // If user is undefined, redirect or show a message
-        window.location.href = '../login.html';  // Redirect to the login page or display a message
-    } else {
-        // Proceed with the application logic if user is defined
-        console.log('User is logged in:', sessionStorage.getItem('userName'));
-    }
-    // Check if the user is logged in
-    if (sessionStorage.getItem('isLoggedIn') !== 'true') {
-        window.location.href = '../index.html'; // Redirect to login page if not logged in
-    } 
-    if (sessionStorage.getItem('is_staff') === 'false' || sessionStorage.getItem('is_staff') === undefined) {
-        // If user is undefined, redirect or show a message
-        window.location.href = '../main.html';  // Redirect to the login page or display a message
-    }
-</script>
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -101,7 +82,7 @@
 
     /* Ensure chart containers are responsive */
     canvas {
-        max-height: 100%;
+        max-height: 300px;
         width: auto !important;
     }
     #requestFeedCarousel {
@@ -294,7 +275,7 @@
                         </div>
                     </div>
                     <div class="box-section">
-                        <div class="section-header">Rooms Checked Today</div>
+                        <div class="section-header">Rooms Checked This Week</div> 
                         <div class="section-content">
                             <canvas id="roomChart"></canvas>
                         </div>
