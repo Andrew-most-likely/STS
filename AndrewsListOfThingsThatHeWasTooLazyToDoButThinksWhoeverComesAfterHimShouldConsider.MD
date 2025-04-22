@@ -17,4 +17,3 @@ Howdy! This is a list, in no particular order, of things that should be done to 
 - Better analytics and a graph maker tool for the data
 - Better site tooltips
 - User notifications about things to be done
-- Honestly just like redo the whole thing its not my best work :\
